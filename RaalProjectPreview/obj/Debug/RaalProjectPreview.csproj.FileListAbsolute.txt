@@ -79,8 +79,11 @@ C:\Users\Ivan\source\repos\RaalProjectPreview\RaalProjectPreview\bin\ru\System.W
 C:\Users\Ivan\source\repos\RaalProjectPreview\RaalProjectPreview\bin\ru\System.Web.WebPages.resources.dll
 C:\Users\Ivan\source\repos\RaalProjectPreview\RaalProjectPreview\bin\ru\System.Web.WebPages.Deployment.resources.dll
 C:\Users\Ivan\source\repos\RaalProjectPreview\RaalProjectPreview\bin\ru\System.Web.WebPages.Razor.resources.dll
-C:\Users\Ivan\source\repos\RaalProjectPreview\RaalProjectPreview\obj\Debug\RaalProjectPreview.csprojAssemblyReference.cache
 C:\Users\Ivan\source\repos\RaalProjectPreview\RaalProjectPreview\obj\Debug\RaalProjectPreview.csproj.CoreCompileInputs.cache
 C:\Users\Ivan\source\repos\RaalProjectPreview\RaalProjectPreview\obj\Debug\RaalProjectPreview.csproj.CopyComplete
 C:\Users\Ivan\source\repos\RaalProjectPreview\RaalProjectPreview\obj\Debug\RaalProjectPreview.dll
 C:\Users\Ivan\source\repos\RaalProjectPreview\RaalProjectPreview\obj\Debug\RaalProjectPreview.pdb
+C:\Users\Ivan\source\repos\RaalProjectPreview\RaalProjectPreview\bin\EntityFramework.dll
+C:\Users\Ivan\source\repos\RaalProjectPreview\RaalProjectPreview\bin\EntityFramework.SqlServer.dll
+C:\Users\Ivan\source\repos\RaalProjectPreview\RaalProjectPreview\bin\EntityFramework.xml
+C:\Users\Ivan\source\repos\RaalProjectPreview\RaalProjectPreview\bin\EntityFramework.SqlServer.xml
