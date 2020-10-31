@@ -3,6 +3,7 @@ using RaalProjectPreview.BLL.Models.Home.Request;
 using RaalProjectPreview.BLL.Models.Home.ServiceModels.Response;
 using RaalProjectPreview.DAL.Models.DBModels;
 using RaalProjectPreview.DAL.Repository;
+using RaalProjectPreview.Security.Roles;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -43,14 +44,16 @@ namespace RaalProjectPreview.BLL.Services
             return null;
         }
         public ResponseStatus SignInUser(AuthRequestModel model) {
+            
             Customer customer = new Customer();
             customer.Address = model.Address;
-            customer.Code = model.CustomerCode;
             customer.Discount = 0;
             customer.Name = model.Name;
             customer = _customerRepository.Create(customer);
-            User_Role user_Role = new User_Role();
-            user_Role.ClientRole = model.Role;
+            customer.Code = customer.Id.ToString() + "-" + DateTime.Now.Year.ToString();
+
+            UserRole user_Role = new UserRole();
+            user_Role.ClientRole = ClientRole.Customer;
             user_Role.CustomerId = customer.Id;
             _user_RoleRepository.Create(user_Role);
             AuthUserData authUserData = new AuthUserData();

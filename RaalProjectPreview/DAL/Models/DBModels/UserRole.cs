@@ -3,7 +3,7 @@ using System;
 
 namespace RaalProjectPreview.DAL.Models.DBModels
 {
-    public class User_Role
+    public class UserRole
     {
         public int Id { get; set; }
         public int CustomerId { get; set; }

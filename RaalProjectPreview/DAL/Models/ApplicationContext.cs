@@ -20,9 +20,16 @@ namespace RaalProjectPreview.DAL.Models
             _instance = new ApplicationContext();
             return _instance;
         }
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        {
+            //Database.SetInitializer<ApplicationContext>(null);
+            base.OnModelCreating(modelBuilder);
+        }
         public DbSet<Customer> Customers { get; set; }
         public DbSet<Item> Items { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
+        public DbSet<UserRole> UserRoles { get; set; }
+        public DbSet<AuthUserData> AuthUserDatas { get; set; }
     }
 }

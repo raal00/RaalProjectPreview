@@ -6,7 +6,7 @@ namespace RaalProjectPreview.DAL.Models.DBModels
     {
         public int Id { get; set; }
         public int CustomerId { get; set; }
-        public string Login { get; set; }
+        public string Login { get; set; } // unique login
         public string PasswordHash { get; set; }
     }
 }

@@ -87,3 +87,4 @@ C:\Users\Ivan\source\repos\RaalProjectPreview\RaalProjectPreview\bin\EntityFrame
 C:\Users\Ivan\source\repos\RaalProjectPreview\RaalProjectPreview\bin\EntityFramework.SqlServer.dll
 C:\Users\Ivan\source\repos\RaalProjectPreview\RaalProjectPreview\bin\EntityFramework.xml
 C:\Users\Ivan\source\repos\RaalProjectPreview\RaalProjectPreview\bin\EntityFramework.SqlServer.xml
+C:\Users\Ivan\source\repos\RaalProjectPreview\RaalProjectPreview\obj\Debug\RaalProjectPreview.csprojAssemblyReference.cache
