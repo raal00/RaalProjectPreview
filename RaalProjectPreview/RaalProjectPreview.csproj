@@ -128,11 +128,13 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="BLL\Models\Enums\ResponseStatus.cs" />
+    <Compile Include="BLL\Models\Enums\ServiceResponseStatus.cs" />
     <Compile Include="BLL\Models\Home\Request\AuthRequestModel.cs" />
     <Compile Include="BLL\Models\Home\Request\LoginRequestModel.cs" />
     <Compile Include="BLL\Models\Home\Response\AuthResponseModel.cs" />
     <Compile Include="BLL\Models\Home\Response\BaseResponse.cs" />
     <Compile Include="BLL\Models\Home\Response\LoginResponseModel.cs" />
+    <Compile Include="BLL\Services\UserAuthService.cs" />
     <Compile Include="Controllers\CustomerController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManagerController.cs" />
@@ -201,7 +203,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="BLL\Services\" />
     <Folder Include="Models\Enums\" />
     <Folder Include="Views\Customer\" />
     <Folder Include="Views\Manager\" />

@@ -19,5 +19,12 @@ namespace RaalProjectPreview.DAL.Repository
             _APPContext.SaveChanges();
             return _updatedAuthUserData;
         }
+
+        public AuthUserData GetUserByLoginAndPasswordHash(AuthUserData userData)
+        {
+            return (from data in _DbSet 
+                    where data.Login == userData.Login && data.PasswordHash == userData.PasswordHash 
+                    select data).FirstOrDefault();
+        }
     }
 }

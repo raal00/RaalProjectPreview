@@ -1,5 +1,8 @@
-﻿using RaalProjectPreview.BLL.Models.Home.Request;
+﻿using RaalProjectPreview.BLL.Models.Enums;
+using RaalProjectPreview.BLL.Models.Home.Request;
 using RaalProjectPreview.BLL.Models.Home.Response;
+using RaalProjectPreview.BLL.Models.Home.ServiceModels.Response;
+using RaalProjectPreview.BLL.Services;
 using System.Web.Mvc;
 
 namespace RaalProjectPreview.Controllers
@@ -20,26 +23,34 @@ namespace RaalProjectPreview.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public ActionResult Login(LoginRequestModel request, string returnUrl)
+        public JsonResult Login(LoginRequestModel request, string returnUrl)
         {
             LoginResponseModel response = new LoginResponseModel();
-            // call login service
-            return View(response);
+            UserAuthService authService = new UserAuthService();
+            ServiceLoginResponse status = authService.LoginUser(request);
+            
+            return Json(response);
         }
 
-        [Route("Auth")]
+        [Route("SignIn")]
         [HttpGet]
         [AllowAnonymous]
-        public ActionResult Auth()
+        public ActionResult SignIn()
         {
             return View();
         }
-        [Route("Auth")]
+        [Route("SignIn")]
         [HttpPost]
         [AllowAnonymous]
-        public ActionResult Auth(AuthRequestModel request)
+        public ActionResult SignIn(AuthRequestModel request)
         {
             AuthResponseModel response = new AuthResponseModel();
+            UserAuthService authService = new UserAuthService();
+            ResponseStatus status = authService.SignInUser(request);
+            if (status == ResponseStatus.Completed)
+            {
+
+            }
             // call auth service
             return View(response);
         }

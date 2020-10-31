@@ -5,6 +5,7 @@ namespace RaalProjectPreview.Security.Roles
     public enum ClientRole
     {
         Manager,
-        Customer
+        Customer,
+        Unauthorized
     }
 }

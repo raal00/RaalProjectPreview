@@ -20,5 +20,12 @@ namespace RaalProjectPreview.DAL.Repository
             _APPContext.SaveChanges();
             return _updatedCustomer;
         }
+
+        public string GetCustomerNameById(int id)
+        {
+            return (from user in _DbSet
+                    where user.Id == id
+                    select user.Name).FirstOrDefault();
+        }
     }
 }
