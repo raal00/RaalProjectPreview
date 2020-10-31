@@ -36,12 +36,13 @@ namespace RaalProjectPreview.BLL.Services
                 response.Role = Security.Roles.ClientRole.Unauthorized;
                 response.Name = null;
                 response.Message = "Unauthorized user";
+                return response;
             }
             response.Name = _customerRepository.GetCustomerNameById(userData.CustomerId);
             response.Role = _user_RoleRepository.GetRoleByCustomerId(userData.CustomerId);
             response.responseStatus = ResponseStatus.Completed;
             response.Message = $"Login user succsess!\nName: {response.Name}\tRole: {response.Role}";
-            return null;
+            return response;
         }
         public ResponseStatus SignInUser(AuthRequestModel model) {
             

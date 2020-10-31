@@ -7,67 +7,88 @@ using System.Web.Mvc;
 
 namespace RaalProjectPreview.Controllers
 {
-    [Authorize]
     [Route("Home")]
     public class HomeController : Controller
     {
+        /// <summary>
+        /// Main panel
+        /// </summary>
+        /// <returns></returns>
+        [Route("Index")]
+        public ActionResult Index()
+        {
+            return View();
+        }
+        [Route("About")]
+        public ActionResult About()
+        {
+            return View();
+        }
+        [Route("Contact")]
+        public ActionResult Contact()
+        {
+            return View();
+        }
+
+
         [Route("Login")]
         [HttpGet]
-        [AllowAnonymous]
         public ActionResult Login()
         {
             return View();
         }
         [Route("Login")]
         [HttpPost]
-        [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public JsonResult Login(LoginRequestModel request)
+        public RedirectResult Login(LoginRequestModel request)
         {
             LoginResponseModel response = new LoginResponseModel();
             UserAuthService authService = new UserAuthService();
             ServiceLoginResponse status = authService.LoginUser(request);
             Session["Role"] = status.Role.ToString();
-            
-            return Json(response);
+            if (status.Role == Security.Roles.ClientRole.Manager)
+            {
+                Session["Authed"] = true;
+                return Redirect("/Admin");
+            }
+            else if (status.Role == Security.Roles.ClientRole.Customer)
+            {
+                Session["Authed"] = true;
+                return Redirect("/Customer");
+            }
+            else
+            {
+                Session["Authed"] = false;
+                return Redirect("/Home/Login");
+            }
         }
-
+        [Route("LogOut")]
+        public RedirectResult LogOut()
+        {
+            Session["Authed"] = false;
+            return Redirect("/Home/Login");
+        }
         [Route("SignIn")]
         [HttpGet]
-        [AllowAnonymous]
         public ActionResult SignIn()
         {
             return View();
         }
         [Route("SignIn")]
         [HttpPost]
-        [AllowAnonymous]
-        public JsonResult SignIn(AuthRequestModel request)
+        public RedirectResult SignIn(AuthRequestModel request)
         {
-            AuthResponseModel response = new AuthResponseModel();
             UserAuthService authService = new UserAuthService();
             ResponseStatus status = authService.SignInUser(request);
             if (status == ResponseStatus.Completed)
             {
                 Session["Role"] = "Customer";
             }
-            return Json(response);
+            return Redirect("/Home/Login");
         }
 
-        [AllowAnonymous]
-        public ActionResult Index()
-        {
-            return View();
-        }
+        
 
-        public ActionResult About()
-        {
-            return View();
-        }
 
-        public ActionResult Contact()
-        {
-            return View();
-        }
     }
 }
