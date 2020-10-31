@@ -1,4 +1,5 @@
 ﻿using RaalProjectPreview.DAL.Models.DBModels;
+using RaalProjectPreview.Security.Roles;
 using System;
 using System.Linq;
 
@@ -17,6 +18,13 @@ namespace RaalProjectPreview.DAL.Repository
             _updatedUserRole.CustomerId = user_role.CustomerId;
             _APPContext.SaveChanges();
             return _updatedUserRole;
+        }
+
+        public ClientRole GetRoleByCustomerId(int id)
+        {
+            return (from role_user in _DbSet
+                    where role_user.CustomerId == id
+                    select role_user.ClientRole).FirstOrDefault();
         }
     }
 }
