@@ -134,6 +134,7 @@
     <Compile Include="BLL\Models\Home\Response\AuthResponseModel.cs" />
     <Compile Include="BLL\Models\Home\Response\BaseResponse.cs" />
     <Compile Include="BLL\Models\Home\Response\LoginResponseModel.cs" />
+    <Compile Include="BLL\Models\Home\ServiceModels\Response\ServiceLoginResponse.cs" />
     <Compile Include="BLL\Services\UserAuthService.cs" />
     <Compile Include="Controllers\CustomerController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -145,7 +146,7 @@
     <Compile Include="DAL\Models\DBModels\Item.cs" />
     <Compile Include="DAL\Models\DBModels\Order.cs" />
     <Compile Include="DAL\Models\DBModels\OrderItem.cs" />
-    <Compile Include="DAL\Models\DBModels\User_Role.cs" />
+    <Compile Include="DAL\Models\DBModels\UserRole.cs" />
     <Compile Include="DAL\Repository\AuthUserDataReposirory.cs" />
     <Compile Include="DAL\Repository\CustomerRepository.cs" />
     <Compile Include="DAL\Repository\Interface\IRepository.cs" />
@@ -198,8 +199,8 @@
     <Content Include="Views\Home\About.cshtml" />
     <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
-    <Content Include="Views\Home\Login.cshtml" />
     <Content Include="Views\Home\Auth.cshtml" />
+    <Content Include="Views\Home\SignIn.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

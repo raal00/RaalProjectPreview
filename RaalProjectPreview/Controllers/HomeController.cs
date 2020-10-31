@@ -14,20 +14,20 @@ namespace RaalProjectPreview.Controllers
         [Route("Login")]
         [HttpGet]
         [AllowAnonymous]
-        public ActionResult Login(string returnUrl)
+        public ActionResult Login()
         {
-            ViewBag.RetUrl = returnUrl;
             return View();
         }
         [Route("Login")]
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public JsonResult Login(LoginRequestModel request, string returnUrl)
+        public JsonResult Login(LoginRequestModel request)
         {
             LoginResponseModel response = new LoginResponseModel();
             UserAuthService authService = new UserAuthService();
             ServiceLoginResponse status = authService.LoginUser(request);
+            Session["Role"] = status.Role.ToString();
             
             return Json(response);
         }
@@ -42,20 +42,19 @@ namespace RaalProjectPreview.Controllers
         [Route("SignIn")]
         [HttpPost]
         [AllowAnonymous]
-        public ActionResult SignIn(AuthRequestModel request)
+        public JsonResult SignIn(AuthRequestModel request)
         {
             AuthResponseModel response = new AuthResponseModel();
             UserAuthService authService = new UserAuthService();
             ResponseStatus status = authService.SignInUser(request);
             if (status == ResponseStatus.Completed)
             {
-
+                Session["Role"] = "Customer";
             }
-            // call auth service
-            return View(response);
+            return Json(response);
         }
 
-
+        [AllowAnonymous]
         public ActionResult Index()
         {
             return View();

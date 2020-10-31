@@ -5,15 +5,15 @@ using System.Linq;
 
 namespace RaalProjectPreview.DAL.Repository
 {
-    public class User_RoleRepository : RepositoryBase<User_Role>
+    public class User_RoleRepository : RepositoryBase<UserRole>
     {
-        public User_Role GetUserRoleModelById(int id)
+        public UserRole GetUserRoleModelById(int id)
         {
             return _DbSet.Where(x => x.Id == id).FirstOrDefault();
         }
-        public User_Role UpdateUserRoleModel(User_Role user_role)
+        public UserRole UpdateUserRoleModel(UserRole user_role)
         {
-            User_Role _updatedUserRole = GetUserRoleModelById(user_role.Id);
+            UserRole _updatedUserRole = GetUserRoleModelById(user_role.Id);
             _updatedUserRole.ClientRole = user_role.ClientRole;
             _updatedUserRole.CustomerId = user_role.CustomerId;
             _APPContext.SaveChanges();
