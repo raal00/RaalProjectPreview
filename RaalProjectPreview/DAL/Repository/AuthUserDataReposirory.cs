@@ -23,7 +23,8 @@ namespace RaalProjectPreview.DAL.Repository
         public AuthUserData GetUserByLoginAndPasswordHash(AuthUserData userData)
         {
             return (from data in _DbSet 
-                    where data.Login == userData.Login && data.PasswordHash == userData.PasswordHash 
+                    where data.Login == userData.Login
+                    where data.PasswordHash == userData.PasswordHash
                     select data).FirstOrDefault();
         }
     }

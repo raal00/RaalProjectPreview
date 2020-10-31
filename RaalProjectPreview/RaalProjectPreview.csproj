@@ -136,6 +136,7 @@
     <Compile Include="BLL\Models\Home\Response\LoginResponseModel.cs" />
     <Compile Include="BLL\Models\Home\ServiceModels\Response\ServiceLoginResponse.cs" />
     <Compile Include="BLL\Services\UserAuthService.cs" />
+    <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\CustomerController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManagerController.cs" />
@@ -201,11 +202,13 @@
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Home\Auth.cshtml" />
     <Content Include="Views\Home\SignIn.cshtml" />
+    <Content Include="Views\Admin\Index.cshtml" />
+    <Content Include="Views\Customer\Index.cshtml" />
+    <Content Include="Views\Home\Login.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Models\Enums\" />
-    <Folder Include="Views\Customer\" />
     <Folder Include="Views\Manager\" />
   </ItemGroup>
   <ItemGroup>
