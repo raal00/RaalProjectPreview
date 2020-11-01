@@ -14,16 +14,19 @@ namespace RaalProjectPreview.Controllers
         /// Main panel
         /// </summary>
         /// <returns></returns>
+        [Authorize]
         [Route("Index")]
         public ActionResult Index()
         {
             return View();
         }
+        [Authorize]
         [Route("About")]
         public ActionResult About()
         {
             return View();
         }
+        [Authorize]
         [Route("Contact")]
         public ActionResult Contact()
         {

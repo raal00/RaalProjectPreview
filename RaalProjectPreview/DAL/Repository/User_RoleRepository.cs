@@ -26,5 +26,11 @@ namespace RaalProjectPreview.DAL.Repository
                     where role_user.CustomerId == id
                     select role_user.ClientRole).FirstOrDefault();
         }
+        public UserRole GetByCustomerId(int id)
+        {
+            return (from role_user in _DbSet
+                    where role_user.CustomerId == id
+                    select role_user).FirstOrDefault();
+        }
     }
 }

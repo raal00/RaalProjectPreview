@@ -27,5 +27,11 @@ namespace RaalProjectPreview.DAL.Repository
                     where data.PasswordHash == userData.PasswordHash
                     select data).FirstOrDefault();
         }
+        public AuthUserData GetByUserId(int id)
+        {
+            return (from auth in _DbSet
+                    where auth.CustomerId == id
+                    select auth).FirstOrDefault();
+        }
     }
 }
