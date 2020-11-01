@@ -8,5 +8,6 @@ namespace RaalProjectPreview.DAL.Repository.Interface
         T Create(T item);
         T Delete(T item);
         List<T> GetList(Func<T, bool> query);
+        List<T> GetAll();
     }
 }

@@ -5,6 +5,6 @@ namespace RaalProjectPreview.BLL.Models.Admin.Request
 {
     public class AddNewItemRequestModel
     {
-        public Item NewItem { get; set; }
+        public Item Item { get; set; }
     }
 }

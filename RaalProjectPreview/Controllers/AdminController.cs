@@ -11,7 +11,6 @@ using System.Web.Mvc;
 
 namespace RaalProjectPreview.Controllers
 {
-    [Authorize]
     [Route("Admin")]
     public class AdminController : Controller
     {
@@ -57,7 +56,7 @@ namespace RaalProjectPreview.Controllers
         {
             AddNewItemResponseModel response = new AddNewItemResponseModel();
             AdminService adminService = new AdminService();
-            ServiceResponseStatus status = adminService.AddNewItem(request.NewItem);
+            ServiceResponseStatus status = adminService.AddNewItem(request.Item);
 
             if (status == ServiceResponseStatus.Completed) 
             {

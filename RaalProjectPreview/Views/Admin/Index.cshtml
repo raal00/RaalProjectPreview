@@ -5,34 +5,61 @@
 <h3>Панель администратора</h3>
 
 <div id="adminPanelVue">
+    <alert ref="alert"></alert>
     <div class="btn-group" role="group">
         <button type="button" v-on:click="ShowAllItems()" class="btn btn-secondary">Показать товары</button>
-        <button type="button" v-on:click="ShowAllItems()" class="btn btn-secondary">Показать покупателей</button>
+        <button type="button" v-on:click="ShowAllUsers()" class="btn btn-secondary">Показать покупателей</button>
         <button type="button" v-on:click="ShowAllOrders()" class="btn btn-secondary">Показать заказы</button>
     </div>
     <div class="btn-group" role="group">
-        <button type="button" class="btn btn-secondary">Добавить товар</button>
-        <button type="button" class="btn btn-secondary">Добавить покупателя</button>
+        <button type="button" class="btn btn-secondary" data-toggle="modal" v-on:click="StartAddNewItem()">Добавить товар</button>
+        <button type="button" class="btn btn-secondary" data-toggle="modal" v-on:click="StartAddNewUser()">Добавить покупателя</button>
     </div>
 
-    <div class="table-responsive">
+    <div style="margin-top: .4em;" class="table-responsive">
         <table class="table table-striped table-bordered">
             <thead>
                 <tr>
+                    <th></th>
+                    <th class="success" colspan="5">Данные пользователя</th>
+                    <th class="warning" colspan="2">Авторизация</th>
+                    <th colspan="3"></th>
+                </tr>
+                <tr>
                     <th>#</th>
+                    <th>Id</th>
+                    <th>Name</th>
+                    <th>Code</th>
+                    <th>Address</th>
+                    <th>Discount</th>
+                    <th>Login</th>
+                    <th>Password hash</th>
+                    <th>Role</th>
+                    <th></th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
                 <tr v-for="(user, index) in Users">
                     <td>{{index}}</td>
-                    <td>{{item.NAME}}</td>
+
+                    <td>{{user.Customer.Id}}</td>
+                    <td>{{user.Customer.Name}}</td>
+                    <td>{{user.Customer.Code}}</td>
+                    <td>{{user.Customer.Address}}</td>
+                    <td>{{user.Customer.Discount}}</td>
+
+                    <td>{{user.AuthUserData.Login}}</td>
+                    <td>{{user.AuthUserData.PasswordHash}}</td>
+
+                    <td>{{user.UserRole.ClientRole}}</td>
                     <td>
-                        <button :id="'btnid'+index" class="btn" v-on:click="addCaseItem(index)" type="button">
-                            -
+                        <button class="btn btn-danger" v-on:click="DeleteUser(index)" type="button">
+                            delete
                         </button>
                     </td>
                     <td>
-                        <button :id="'btnid'+index" class="btn" v-on:click="addCaseItem(index)" type="button">
+                        <button class="btn btn-secondary" v-on:click="StartEditUser(index)" type="button">
                             edit
                         </button>
                     </td>
@@ -44,16 +71,39 @@
         <table class="table table-striped table-bordered">
             <thead>
                 <tr>
+                    <th></th>
+                    <th class="success" colspan="6">Данные заказа</th>
+                    <th colspan="2"></th>
+                </tr>
+                <tr>
                     <th>#</th>
+                    <th>Id</th>
+                    <th>Customer</th>
+                    <th>Order date</th>
+                    <th>Shipment date</th>
+                    <th>Order number</th>
+                    <th>Status</th>
+                    <th></th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="(item, index) in Orders">
+                <tr v-for="(order, index) in Orders">
                     <td>{{index}}</td>
-                    <td>{{order.NAME}}</td>
+                    <td>{{order.Id}}</td>
+                    <td>{{order.CustomerId}}</td>
+                    <td>{{order.OrderDate | formatDate}}</td>
+                    <td>{{order.ShipmentDate | formatDate}}</td>
+                    <td>{{order.OrderNumber}}</td>
+                    <td>{{order.Status}}</td>
                     <td>
-                        <button :id="'btnid'+index" class="btn" v-on:click="addCaseItem(index)" type="button">
-                            -
+                        <button class="btn btn-warning" v-on:click="SetCompletedOrderStatus(index)" type="button">
+                            Закрыть
+                        </button>
+                    </td>
+                    <td>
+                        <button class="btn btn-warning" v-on:click="SetInProcessingOrderStatus(index)" type="button">
+                            Подтвердить
                         </button>
                     </td>
                 </tr>
@@ -64,21 +114,108 @@
         <table class="table table-striped table-bordered">
             <thead>
                 <tr>
+                    <th></th>
+                    <th class="success" colspan="5">Данные товара</th>
+                    <th colspan="2"></th>
+                </tr>
+                <tr>
                     <th>#</th>
+                    <th>Id</th>
+                    <th>Name</th>
+                    <th>Code</th>
+                    <th>Price</th>
+                    <th>Category</th>
+                    <th></th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
                 <tr v-for="(item, index) in Items">
                     <td>{{index}}</td>
-                    <td>{{item.NAME}}</td>
+                    <td>{{item.Id}}</td>
+                    <td>{{item.Name}}</td>
+                    <td>{{item.Code}}</td>
+                    <td>{{item.Price}}</td>
+                    <td>{{item.Category}}</td>
                     <td>
-                        <button :id="'btnid'+index" class="btn" v-on:click="addCaseItem(index)" type="button">
-                            -
+                        <button class="btn btn-danger" v-on:click="DeleteItem(index)" type="button">
+                            delete
+                        </button>
+                    </td>
+                    <td>
+                        <button class="btn btn-secondary" v-on:click="StartEditItem(index)" type="button">
+                            edit
                         </button>
                     </td>
                 </tr>
             </tbody>
         </table>
     </div>
+    <div class="modal" id="AddUserModal" tabindex="-1" role="dialog" aria-labelledby="AddUserModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="AddUserModalLabel">Новый пользователь</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <label for="userModal_Name">Имя</label>
+                    <input id="userModal_Name" class="form-control" v-model="NewUser.Customer.Name" />
+                    <label for="userModal_Code">Код</label>
+                    <input id="userModal_Code" class="form-control" v-model="NewUser.Customer.Code" />
+                    <label for="userModal_Address">Адрес</label>
+                    <input id="userModal_Address" class="form-control" v-model="NewUser.Customer.Address" />
+                    <label for="userModal_Discount">Скидка</label>
+                    <input id="userModal_Discount" class="form-control" v-model="NewUser.Customer.Discount" />
+                    <hr />
+
+                    <label for="userModal_Login">Логин</label>
+                    <input id="userModal_Login" class="form-control" v-model="NewUser.AuthUserData.Login" />
+                    <label for="userModal_PasswordHash">Хэш пароля</label>
+                    <input id="userModal_PasswordHash" class="form-control" v-model="NewUser.AuthUserData.PasswordHash" />
+                    <hr />
+
+                    <label for="userModal_ClientRole">Роль (0-админ/1-покупатель)</label>
+                    <input id="userModal_ClientRole" class="form-control" v-model="NewUser.UserRole.ClientRole" />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" v-on:click="CompleteUser()" class="btn btn-primary">Ok</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal" id="AddItemModal" tabindex="-1" role="dialog" aria-labelledby="AddItemModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="AddItemModalLabel">Новый товар</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <label for="itemModal_Code">Код</label>
+                    <input id="itemModal_Code" class="form-control" v-model="NewItem.Code" />
+                    
+                    <label for="itemModal_Name">Название</label>
+                    <input id="itemModal_Name" class="form-control" v-model="NewItem.Name" />
+                    
+                    <label for="itemModal_Price">Цена</label>
+                    <input id="itemModal_Price" class="form-control" v-model="NewItem.Price" />
+                    
+                    <label for="itemModal_Category">Категория</label>
+                    <input id="itemModal_Category" class="form-control" v-model="NewItem.Category" />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" v-on:click="CompleteItem()" class="btn btn-primary">Ok</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
 <script type="text/javascript" src="~/Scripts/Vue/AdminPanelVue.js"></script>

@@ -29,6 +29,11 @@ namespace RaalProjectPreview.DAL.Repository
             return removedItem;
         }
 
+        public List<T> GetAll()
+        {
+            return _DbSet.ToList();
+        }
+
         public List<T> GetList(Func<T, bool> query)
         {
             return _DbSet.Where(query).ToList();

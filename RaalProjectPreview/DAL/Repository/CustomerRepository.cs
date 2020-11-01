@@ -13,6 +13,7 @@ namespace RaalProjectPreview.DAL.Repository
         public Customer UpdateCustomer(Customer customer)
         {
             Customer _updatedCustomer = GetCustomerById(customer.Id);
+            if (_updatedCustomer == null) throw new NullReferenceException($"customer with id={customer.Id} not found");
             _updatedCustomer.Name = customer.Name;
             _updatedCustomer.Code = customer.Code;
             _updatedCustomer.Discount = customer.Discount;
@@ -26,6 +27,12 @@ namespace RaalProjectPreview.DAL.Repository
             return (from user in _DbSet
                     where user.Id == id
                     select user.Name).FirstOrDefault();
+        }
+        public Customer GetById(int id)
+        {
+            return (from user in _DbSet 
+                    where user.Id == id 
+                    select user).FirstOrDefault();
         }
     }
 }
