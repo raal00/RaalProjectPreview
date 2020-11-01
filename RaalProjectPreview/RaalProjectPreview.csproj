@@ -147,6 +147,14 @@
     <Compile Include="BLL\Models\Admin\Response\ShowItemsResponseModel.cs" />
     <Compile Include="BLL\Models\Admin\Response\ShowOrdersResponseModel.cs" />
     <Compile Include="BLL\Models\Admin\Response\ShowUserListResponseModel.cs" />
+    <Compile Include="BLL\Models\Customer\Request\AddItemToCaseRequestModel.cs" />
+    <Compile Include="BLL\Models\Customer\Request\CloseOrderRequestModel.cs" />
+    <Compile Include="BLL\Models\Customer\Response\AddItemToCaseResponseModel.cs" />
+    <Compile Include="BLL\Models\Customer\Response\CloseOrderResponseModel.cs" />
+    <Compile Include="BLL\Models\Customer\Response\CreateOrderResponseModel.cs" />
+    <Compile Include="BLL\Models\Customer\Response\GetItemListResponseModel.cs" />
+    <Compile Include="BLL\Models\Customer\Response\MyCaseResponseModel.cs" />
+    <Compile Include="BLL\Models\Customer\Response\ShowMyOrdersResponseModel.cs" />
     <Compile Include="BLL\Models\Enums\ResponseStatus.cs" />
     <Compile Include="BLL\Models\Enums\ServiceResponseStatus.cs" />
     <Compile Include="BLL\Models\Home\Request\AuthRequestModel.cs" />
@@ -156,20 +164,22 @@
     <Compile Include="BLL\Models\Home\Response\LoginResponseModel.cs" />
     <Compile Include="BLL\Models\Home\ServiceModels\Response\ServiceLoginResponse.cs" />
     <Compile Include="BLL\Services\AdminService.cs" />
+    <Compile Include="BLL\Services\CustomerService.cs" />
     <Compile Include="BLL\Services\UserAuthService.cs" />
     <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\CustomerController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Controllers\ManagerController.cs" />
     <Compile Include="DAL\Enums\OrderStatus.cs" />
     <Compile Include="DAL\Models\ApplicationContext.cs" />
     <Compile Include="DAL\Models\DBModels\AuthUserData.cs" />
     <Compile Include="DAL\Models\DBModels\Customer.cs" />
+    <Compile Include="DAL\Models\DBModels\CustomerCaseItem.cs" />
     <Compile Include="DAL\Models\DBModels\Item.cs" />
     <Compile Include="DAL\Models\DBModels\Order.cs" />
     <Compile Include="DAL\Models\DBModels\OrderItem.cs" />
     <Compile Include="DAL\Models\DBModels\UserRole.cs" />
     <Compile Include="DAL\Repository\AuthUserDataReposirory.cs" />
+    <Compile Include="DAL\Repository\CustomerCaseItemRepository.cs" />
     <Compile Include="DAL\Repository\CustomerRepository.cs" />
     <Compile Include="DAL\Repository\Interface\IRepository.cs" />
     <Compile Include="DAL\Repository\ItemRepository.cs" />
@@ -208,6 +218,7 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
     <Content Include="Scripts\Vue\AdminPanelVue.js" />
+    <Content Include="Scripts\Vue\CustomerPanelVue.js" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>

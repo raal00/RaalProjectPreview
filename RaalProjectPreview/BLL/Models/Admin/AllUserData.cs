@@ -5,7 +5,7 @@ namespace RaalProjectPreview.BLL.Models.Admin
 {
     public class AllUserData
     {
-        public Customer Customer { get; set; }
+        public RaalProjectPreview.DAL.Models.DBModels.Customer Customer { get; set; }
         public AuthUserData AuthUserData { get; set; }
         public UserRole UserRole { get; set; }
     }

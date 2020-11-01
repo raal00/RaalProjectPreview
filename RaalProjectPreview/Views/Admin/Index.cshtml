@@ -1,11 +1,7 @@
 ﻿
-@{
-    ViewBag.Title = "Index";
-}
 <h3>Панель администратора</h3>
 
 <div id="adminPanelVue">
-    <alert ref="alert"></alert>
     <div class="btn-group" role="group">
         <button type="button" v-on:click="ShowAllItems()" class="btn btn-secondary">Показать товары</button>
         <button type="button" v-on:click="ShowAllUsers()" class="btn btn-secondary">Показать покупателей</button>
@@ -92,8 +88,8 @@
                     <td>{{index}}</td>
                     <td>{{order.Id}}</td>
                     <td>{{order.CustomerId}}</td>
-                    <td>{{order.OrderDate | formatDate}}</td>
-                    <td>{{order.ShipmentDate | formatDate}}</td>
+                    <td>{{order.OrderDate}}</td>
+                    <td>{{order.ShipmentDate}}</td>
                     <td>{{order.OrderNumber}}</td>
                     <td>{{order.Status}}</td>
                     <td>

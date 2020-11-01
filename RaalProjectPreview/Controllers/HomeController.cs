@@ -48,6 +48,7 @@ namespace RaalProjectPreview.Controllers
             LoginResponseModel response = new LoginResponseModel();
             UserAuthService authService = new UserAuthService();
             ServiceLoginResponse status = authService.LoginUser(request);
+            Session["ID"] = status.UserId;
             Session["Role"] = status.Role.ToString();
             if (status.Role == Security.Roles.ClientRole.Manager)
             {

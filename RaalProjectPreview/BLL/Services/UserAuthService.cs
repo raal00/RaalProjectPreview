@@ -38,6 +38,7 @@ namespace RaalProjectPreview.BLL.Services
                 response.Message = "Unauthorized user";
                 return response;
             }
+            response.UserId = userData.CustomerId;
             response.Name = _customerRepository.GetCustomerNameById(userData.CustomerId);
             response.Role = _user_RoleRepository.GetRoleByCustomerId(userData.CustomerId);
             response.responseStatus = ResponseStatus.Completed;
