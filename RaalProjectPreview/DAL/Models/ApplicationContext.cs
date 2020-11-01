@@ -31,5 +31,6 @@ namespace RaalProjectPreview.DAL.Models
         public DbSet<OrderItem> OrderItems { get; set; }
         public DbSet<UserRole> UserRoles { get; set; }
         public DbSet<AuthUserData> AuthUserDatas { get; set; }
+        public DbSet<CustomerCaseItem> CustomerCaseItems { get; set; }
     }
 }

@@ -6,6 +6,7 @@ namespace RaalProjectPreview.BLL.Models.Home.ServiceModels.Response
 {
     public class ServiceLoginResponse : BaseResponse
     {
+        public int UserId { get; set; }
         public string Name { get; set; } // response user name
         public ClientRole Role { get; set; } // user role
     }

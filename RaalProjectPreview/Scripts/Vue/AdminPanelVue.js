@@ -1,6 +1,4 @@
-﻿Vue.filter('formatDate', function (value) {
-	return value.getFullYear() + '.' + value.getMonth() + '.' + value.getDate();
-});
+﻿
 var adminPanelVue = new Vue({
 	el: '#adminPanelVue',
 	data:
