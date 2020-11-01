@@ -2,24 +2,83 @@
 @{
     ViewBag.Title = "Index";
 }
-<h3>Admin</h3>
+<h3>Панель администратора</h3>
 
-<div id="modDialog" class="modal fade">
-    <div id="dialogContent" class="modal-dialog"></div>
-</div>
+<div id="adminPanelVue">
+    <div class="btn-group" role="group">
+        <button type="button" v-on:click="ShowAllItems()" class="btn btn-secondary">Показать товары</button>
+        <button type="button" v-on:click="ShowAllItems()" class="btn btn-secondary">Показать покупателей</button>
+        <button type="button" v-on:click="ShowAllOrders()" class="btn btn-secondary">Показать заказы</button>
+    </div>
+    <div class="btn-group" role="group">
+        <button type="button" class="btn btn-secondary">Добавить товар</button>
+        <button type="button" class="btn btn-secondary">Добавить покупателя</button>
+    </div>
 
-<div class="modal-content">
-    <div class="modal-header">
-        <button class="close" data-dismiss="modal" area-hidden="true">X</button>
-        <h4>Модель компьютера</h4>
+    <div class="table-responsive">
+        <table class="table table-striped table-bordered">
+            <thead>
+                <tr>
+                    <th>#</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="(user, index) in Users">
+                    <td>{{index}}</td>
+                    <td>{{item.NAME}}</td>
+                    <td>
+                        <button :id="'btnid'+index" class="btn" v-on:click="addCaseItem(index)" type="button">
+                            -
+                        </button>
+                    </td>
+                    <td>
+                        <button :id="'btnid'+index" class="btn" v-on:click="addCaseItem(index)" type="button">
+                            edit
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
     </div>
-    <div class="modal-body">
-        <dl class="dl-horizontal">
-            <dt>Название модели:</dt>
-            <dd>MMMMM</dd>
-        </dl>
+    <div class="table-responsive">
+        <table class="table table-striped table-bordered">
+            <thead>
+                <tr>
+                    <th>#</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="(item, index) in Orders">
+                    <td>{{index}}</td>
+                    <td>{{order.NAME}}</td>
+                    <td>
+                        <button :id="'btnid'+index" class="btn" v-on:click="addCaseItem(index)" type="button">
+                            -
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-striped table-bordered">
+            <thead>
+                <tr>
+                    <th>#</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="(item, index) in Items">
+                    <td>{{index}}</td>
+                    <td>{{item.NAME}}</td>
+                    <td>
+                        <button :id="'btnid'+index" class="btn" v-on:click="addCaseItem(index)" type="button">
+                            -
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 </div>
-<script type="text/javascript">
-    $('#modDialog').modal('show');
-</script>
+<script type="text/javascript" src="~/Scripts/Vue/AdminPanelVue.js"></script>
