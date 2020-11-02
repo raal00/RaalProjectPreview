@@ -28,7 +28,10 @@ namespace RaalProjectPreview.BLL.Services
             _user_RoleRepository = new User_RoleRepository(context);
             _orderRepository = new OrderRepository(context);
         }
-
+        public bool IsAdmin(int userId)
+        {
+            return _user_RoleRepository.GetRoleByCustomerId(userId) == Security.Roles.ClientRole.Manager;
+        }
         public List<Item> ShowItems()
         {
             List<Item> response;

@@ -22,7 +22,16 @@ namespace RaalProjectPreview.Controllers
         [Route("Index")]
         public ActionResult Index()
         {
-            return View();
+            if (Session["ID"] == null) return new RedirectResult("/Home/Login");
+            int customerID = (int)Session["ID"];
+            AdminService adminService = new AdminService(ApplicationContext.GetInstance());
+            if (adminService.IsAdmin(customerID)) { 
+                return View(); 
+            }
+            else {
+                Session["ID"] = null;
+                return new RedirectResult("/Home/Login");
+            }
         }
 
         [Route("ShowOrders")]
