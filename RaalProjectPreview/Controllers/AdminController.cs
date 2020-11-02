@@ -3,7 +3,6 @@ using RaalProjectPreview.BLL.Models.Admin.Response;
 using RaalProjectPreview.BLL.Models.Enums;
 using RaalProjectPreview.BLL.Services;
 using RaalProjectPreview.DAL.Models;
-using RaalProjectPreview.DAL.Models.DBModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -28,6 +28,7 @@ namespace RaalProjectPreview.BLL.Services
         {
             ServiceLoginResponse response = new ServiceLoginResponse();
             AuthUserData userData = new AuthUserData();
+            List<AuthUserData> aa = _authUserDataReposirory.GetAll(); 
             userData.Login = model.Login;
             userData.PasswordHash = model.Password.GetHashCode().ToString();
             userData = _authUserDataReposirory.GetUserByLoginAndPasswordHash(userData);
