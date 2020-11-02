@@ -2,10 +2,12 @@
 using RaalProjectPreview.BLL.Models.Customer.Response;
 using RaalProjectPreview.BLL.Models.Enums;
 using RaalProjectPreview.BLL.Services;
+using RaalProjectPreview.DAL.Models;
 using RaalProjectPreview.DAL.Models.DBModels;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Web.Mvc;
 
 namespace RaalProjectPreview.Controllers
@@ -28,7 +30,7 @@ namespace RaalProjectPreview.Controllers
         public JsonResult GetItemList()
         {
             GetItemListResponseModel response = new GetItemListResponseModel();
-            CustomerService customerService = new CustomerService();
+            CustomerService customerService = new CustomerService(ApplicationContext.GetInstance());
             response.Items = customerService.GetItemList();
             if (response.Items == null) 
             {
@@ -45,7 +47,7 @@ namespace RaalProjectPreview.Controllers
         public JsonResult AddItemToCase(AddItemToCaseRequestModel request)
         {
             AddItemToCaseResponseModel response = new AddItemToCaseResponseModel();
-            CustomerService customerService = new CustomerService();
+            CustomerService customerService = new CustomerService(ApplicationContext.GetInstance());
             if (Session["ID"] == null)
             {
                 response.responseStatus = BLL.Models.Enums.ResponseStatus.Failed;
@@ -66,7 +68,7 @@ namespace RaalProjectPreview.Controllers
         public JsonResult CreateOrder()
         {
             CreateOrderResponseModel response = new CreateOrderResponseModel();
-            CustomerService customerService = new CustomerService();
+            CustomerService customerService = new CustomerService(ApplicationContext.GetInstance());
             if (Session["ID"] == null)
             {
                 response.responseStatus = BLL.Models.Enums.ResponseStatus.Failed;
@@ -89,7 +91,7 @@ namespace RaalProjectPreview.Controllers
         public JsonResult ShowMyOrders()
         {
             ShowMyOrdersResponseModel response = new ShowMyOrdersResponseModel();
-            CustomerService customerService = new CustomerService();
+            CustomerService customerService = new CustomerService(ApplicationContext.GetInstance());
             if (Session["ID"] == null)
             {
                 response.responseStatus = BLL.Models.Enums.ResponseStatus.Failed;
@@ -106,14 +108,22 @@ namespace RaalProjectPreview.Controllers
             }
             response.responseStatus = ResponseStatus.Completed;
             response.Message = "Succsessful";
-            response.Orders = orders;
+            response.Orders = orders.Select(x => new BLL.Models.Admin.OrderData()
+            {
+                Id = x.Id,
+                OrderDate = x.OrderDate.ToShortDateString(),
+                CustomerId = x.CustomerId,
+                OrderNumber = x.OrderNumber,
+                ShipmentDate = x.ShipmentDate.ToShortDateString(),
+                Status = x.Status
+            }).ToList();
             return Json(response);
         }
         [Route("CloseOrder")]
         public JsonResult CloseOrder(CloseOrderRequestModel request)
         {
             CloseOrderResponseModel response = new CloseOrderResponseModel();
-            CustomerService customerService = new CustomerService();
+            CustomerService customerService = new CustomerService(ApplicationContext.GetInstance());
             if (Session["ID"] == null)
             {
                 response.responseStatus = BLL.Models.Enums.ResponseStatus.Failed;
@@ -136,7 +146,7 @@ namespace RaalProjectPreview.Controllers
         public JsonResult MyCase()
         {
             MyCaseResponseModel response = new MyCaseResponseModel();
-            CustomerService customerService = new CustomerService();
+            CustomerService customerService = new CustomerService(ApplicationContext.GetInstance());
             if (Session["ID"] == null)
             {
                 response.responseStatus = BLL.Models.Enums.ResponseStatus.Failed;

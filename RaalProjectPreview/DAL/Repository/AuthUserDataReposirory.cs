@@ -1,11 +1,16 @@
 ﻿using RaalProjectPreview.DAL.Models.DBModels;
 using System;
+using System.Data.Entity;
 using System.Linq;
 
 namespace RaalProjectPreview.DAL.Repository
 {
     public class AuthUserDataReposirory : RepositoryBase<AuthUserData>
     {
+        public AuthUserDataReposirory(DbContext context) : base(context)
+        {
+
+        }
         public AuthUserData GetAuthUserDataById(int id)
         {
             return _DbSet.Where(x => x.Id == id).FirstOrDefault();

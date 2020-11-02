@@ -6,6 +6,6 @@ namespace RaalProjectPreview.BLL.Models.Admin.Response
 {
     public class ShowOrdersResponseModel
     {
-        public List<Order> Orders { get; set; }
+        public List<OrderData> Orders { get; set; }
     }
 }

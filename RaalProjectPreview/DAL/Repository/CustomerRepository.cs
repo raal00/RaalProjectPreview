@@ -1,11 +1,16 @@
 ﻿using RaalProjectPreview.DAL.Models.DBModels;
 using System;
+using System.Data.Entity;
 using System.Linq;
 
 namespace RaalProjectPreview.DAL.Repository
 {
     public class CustomerRepository : RepositoryBase<Customer>
     {
+        public CustomerRepository(DbContext context) : base(context)
+        {
+
+        }
         public Customer GetCustomerById(int id)
         {
             return _DbSet.Where(x => x.Id == id).FirstOrDefault();

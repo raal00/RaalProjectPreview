@@ -1,12 +1,17 @@
 ﻿using RaalProjectPreview.DAL.Models.DBModels;
 using RaalProjectPreview.Security.Roles;
 using System;
+using System.Data.Entity;
 using System.Linq;
 
 namespace RaalProjectPreview.DAL.Repository
 {
     public class User_RoleRepository : RepositoryBase<UserRole>
     {
+        public User_RoleRepository(DbContext context) : base(context)
+        {
+
+        }
         public UserRole GetUserRoleModelById(int id)
         {
             return _DbSet.Where(x => x.Id == id).FirstOrDefault();

@@ -8,11 +8,11 @@ namespace RaalProjectPreview.DAL.Repository
 {
     public class RepositoryBase<T> : IRepository<T> where T : class
     {
-        protected readonly ApplicationContext _APPContext;
+        protected readonly DbContext _APPContext;
         protected readonly IDbSet<T> _DbSet;
-        public RepositoryBase()
+        public RepositoryBase(DbContext context)
         {
-            _APPContext = ApplicationContext.GetInstance();
+            _APPContext = context;
             _DbSet = _APPContext.Set<T>();
         }
         public T Create(T item)
