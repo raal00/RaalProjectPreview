@@ -53,7 +53,7 @@
 				url: "/Customer/ShowMyOrders",
 				success: function (response) {
 					vue.Orders = response.Orders;
-					if (vue.Orders.length == 0) alert('Ничего не найдено');
+					if (response.Orders.length == 0) alert('Ничего не найдено');
 				}
 			});
 		},
@@ -69,6 +69,7 @@
 				url: "/Customer/CloseOrder",
 				success: function (response) {
 					vue.ShowMyOrders();
+					vue.GetMyCase();
 				}
 			});
 		},
@@ -79,7 +80,6 @@
 				url: "/Customer/MyCase",
 				success: function (response) {
 					vue.CaseItems = response.CustomerCase;
-					if (vue.CaseItems.length == 0) alert('Ничего не найдено');
 				}
 			});
         }
@@ -89,7 +89,7 @@
 		filteredOrderList() {
 			var vue = this;
 			return vue.Orders.filter(order => {
-				return order.Status == 'New' || vue.OnlyNewOrders == false
+				if (order.Status == 'New' || vue.OnlyNewOrders == false) return order;
 			})
 		}
 	}

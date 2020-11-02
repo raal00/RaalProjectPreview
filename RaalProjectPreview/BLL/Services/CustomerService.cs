@@ -39,9 +39,8 @@ namespace RaalProjectPreview.BLL.Services
         public List<Item> GetMyCase(int userId)
         {
             List<Item> caseItems = (from _case in _customerCaseItemRepository.GetList(x => x.CustomerId == userId)
-                                    join _item in _itemRepository.GetAll() on _case.ItemId equals _item.Id into j
-                                    from subcase in j.DefaultIfEmpty()
-                                    select subcase).ToList();
+                                    join _item in _itemRepository.GetAll()  on _case.ItemId equals _item.Id
+                                    select _item).ToList();
             return caseItems;
         }
         public ResponseStatus AddItemToCase(int itemId, int userId)
@@ -49,7 +48,7 @@ namespace RaalProjectPreview.BLL.Services
             Item item = _itemRepository.GetItemById(itemId);
             if (item == null) return ResponseStatus.Failed;
             CustomerCaseItem caseItem = new CustomerCaseItem();
-            caseItem.CustomerId = itemId;
+            caseItem.CustomerId = userId;
             caseItem.ItemId = itemId;
             _customerCaseItemRepository.Create(caseItem);
             return ResponseStatus.Completed;
@@ -61,19 +60,25 @@ namespace RaalProjectPreview.BLL.Services
             {
                 return null;
             }
-            List<OrderItem> orderItems = new List<OrderItem>();
-            foreach (var itemPerCase in itemsPerCase)
-            {
-
-            }
-
             Order order = new Order();
             order.CustomerId = userId;
             order.OrderDate = DateTime.Now;
             order.ShipmentDate = DateTime.Now.AddDays(7);
             order.Status = OrderStatus.New.ToString();
             order = _orderRepository.Create(order);
-            
+
+            var orderItems = (from itemPerCase in itemsPerCase
+                              group itemPerCase by itemPerCase.ItemId).ToList();
+            foreach (IGrouping<int, CustomerCaseItem> oitem in orderItems)
+            {
+                OrderItem orderItem = new OrderItem();
+                orderItem.ItemsCount = oitem.Count();
+                orderItem.ItemPrice = _itemRepository.GetItemById(oitem.Key).Price;
+                orderItem.ItemId = oitem.Key;
+                orderItem.OrderId = order.Id;
+                _orderItemRepository.Create(orderItem);
+            }
+            _customerCaseItemRepository.RemoveCaseByUserId(userId);
             return order;
         }
         public List<Item> GetItemList()
@@ -89,6 +94,14 @@ namespace RaalProjectPreview.BLL.Services
                 order.Status != OrderStatus.New.ToString()) 
                 return ResponseStatus.Failed;
             _orderRepository.Delete(order);
+            try
+            {
+                _orderItemRepository.RemoveOrderItemsByOrderId(orderId);
+            }
+            catch(Exception er)
+            {
+                return ResponseStatus.Failed;
+            }
             return ResponseStatus.Completed;
         }
     }

@@ -209,7 +209,7 @@ namespace RaalProjectPreview.Controllers
                 response.Message = "Fail";
                 response.responseStatus = ResponseStatus.Failed;
             }
-            return Json(null);
+            return Json(response);
         }
     }
 }
