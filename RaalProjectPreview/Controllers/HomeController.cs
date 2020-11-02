@@ -10,29 +10,12 @@ namespace RaalProjectPreview.Controllers
     [Route("Home")]
     public class HomeController : Controller
     {
-        /// <summary>
-        /// Main panel
-        /// </summary>
-        /// <returns></returns>
         [Authorize]
         [Route("Index")]
         public ActionResult Index()
         {
             return View();
         }
-        [Authorize]
-        [Route("About")]
-        public ActionResult About()
-        {
-            return View();
-        }
-        [Authorize]
-        [Route("Contact")]
-        public ActionResult Contact()
-        {
-            return View();
-        }
-
 
         [Route("Login")]
         [HttpGet]
@@ -90,9 +73,5 @@ namespace RaalProjectPreview.Controllers
             }
             return Redirect("/Home/Login");
         }
-
-        
-
-
     }
 }

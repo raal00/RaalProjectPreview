@@ -1,5 +1,6 @@
 ﻿using RaalProjectPreview.DAL.Models.DBModels;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace RaalProjectPreview.DAL.Repository
@@ -19,6 +20,16 @@ namespace RaalProjectPreview.DAL.Repository
             _updatedOrder.OrderId = orderItem.OrderId;
             _APPContext.SaveChanges();
             return _updatedOrder;
+        }
+        public void RemoveOrderItemsByOrderId(int orderId)
+        {
+            List<OrderItem> orderItems = (from orderItem in _DbSet
+                                          where orderItem.OrderId == orderId
+                                          select orderItem).ToList();
+            foreach (var orderItem in orderItems)
+            {
+                _DbSet.Remove(orderItem);
+            }
         }
     }
 }
