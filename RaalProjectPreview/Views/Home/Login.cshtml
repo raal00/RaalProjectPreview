@@ -4,31 +4,56 @@
 @using (Html.BeginForm()) 
 {
     @Html.AntiForgeryToken()
-    
-    <div class="form-horizontal">
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        <div class="form-group">
-            <label for="login" class="col-sm-2">Логин</label>
-            <div id ="login" class="col-sm-10">
-                @Html.EditorFor(model => model.Login, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Login, "", new { @class = "text-danger" })
+<div class="row">
+    <div class="col-sm-6">
+        <div class="form-horizontal">
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            <div class="form-group">
+                <label for="login" class="col-sm-2">Логин</label>
+                <div id="login" class="col-sm-10">
+                    @Html.EditorFor(model => model.Login, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Login, "", new { @class = "text-danger" })
+                </div>
             </div>
-        </div>
 
-        <div class="form-group">
-            <label for="pass" class="col-sm-2">Логин</label>
-            <div id="pass" class="col-sm-10">
-                @Html.EditorFor(model => model.Password, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
+            <div class="form-group">
+                <label for="pass" class="col-sm-2">Логин</label>
+                <div id="pass" class="col-sm-10">
+                    @Html.EditorFor(model => model.Password, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
+                </div>
             </div>
-        </div>
 
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Вход" class="btn btn-default" />
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Вход" class="btn btn-default" />
+                </div>
             </div>
         </div>
     </div>
+    <div class="col-sm-offset-2 col-sm-4">
+        <h3 class="text-primary">Test users</h3>
+        <hr />
+        <p>Admin user</p>
+        <div class="form-group row">
+            <label for="adminLogin" class="col-sm-2 col-form-label">Login:</label>
+            <h5 id="adminLogin" class="col-sm-10">Admin</h5>
+        </div>
+        <div class="form-group row">
+            <label for="adminPass" class="col-sm-2 col-form-label">Password:</label>
+            <h5 id="adminPass" class="col-sm-10">Admin</h5>
+        </div>
+        <p>Customer user</p>
+        <div class="form-group row">
+            <label for="customerLogin" class="col-sm-2 col-form-label">Login:</label>
+            <h5 id="customerLogin" class="col-sm-10">Customer</h5>
+        </div>
+        <div class="form-group row">
+            <label for="customerPass" class="col-sm-2 col-form-label">Password:</label>
+            <h5 id="customerPass" class="col-sm-10">Customer</h5>
+        </div>
+    </div>    
+</div>
 }
 <div>
     <a id="register" class="btn btn-link" href="/Home/SignIn">Регистрация</a>
