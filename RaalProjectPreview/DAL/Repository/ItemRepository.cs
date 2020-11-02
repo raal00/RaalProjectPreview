@@ -20,5 +20,10 @@ namespace RaalProjectPreview.DAL.Repository
             _APPContext.SaveChanges();
             return _updatedItem;
         }
+        public int GetLastItemId()
+        {
+            Item item = _DbSet.ToList().LastOrDefault();
+            return item == null ? 0 : item.Id;
+        }
     }
 }

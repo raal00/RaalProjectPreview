@@ -57,7 +57,6 @@ namespace RaalProjectPreview.BLL.Services
                             UserRole = role
                         }
                         ).ToList();
-            if (response == null) response = new List<AllUserData>();
             return response;
         }
 
@@ -70,6 +69,11 @@ namespace RaalProjectPreview.BLL.Services
         {
             try
             {
+                Random random = new Random();
+                string date = DateTime.Now.Year.ToString();
+                string code1 = random.Next(10, 99).ToString();
+                string code2 = _itemRepository.GetLastItemId().ToString();
+                item.Code = $"{code1}-{date}-AA{code2}";
                 _itemRepository.Create(item);
             }
             catch (Exception er)
@@ -122,13 +126,29 @@ namespace RaalProjectPreview.BLL.Services
         /// <returns></returns>
         public ServiceResponseStatus AddNewUser(Customer customer, AuthUserData authUserData, UserRole role)
         {
-            //добавить трай
-            //проверка customer.Code
-            customer = _customerRepository.Create(customer);
+            
+            string date = DateTime.Now.Year.ToString();
+            string lastCode = _customerRepository.GetIdOfLastUser().ToString();
+            while(lastCode.Length < 4) lastCode += '0';
+            customer.Code = date + "-" + lastCode;
+
+            try
+            {
+                customer = _customerRepository.Create(customer);
+            }
+            catch(Exception er)
+            {
+                return ServiceResponseStatus.Failure;
+            }
             authUserData.CustomerId = customer.Id;
+            if (authUserData.Login == null || authUserData.PasswordHash == null) 
+            {
+                _customerRepository.Delete(customer);
+                return ServiceResponseStatus.Failure; 
+            }
             _authUserDataReposirory.Create(authUserData);
             role.CustomerId = customer.Id;
-            //проверка role.ClientRole
+            if ((int)role.ClientRole < 0 || (int)role.ClientRole > 1) role.ClientRole = Security.Roles.ClientRole.Customer;
             _user_RoleRepository.Create(role);
             return ServiceResponseStatus.Completed;
         }
@@ -153,6 +173,7 @@ namespace RaalProjectPreview.BLL.Services
                 int userRoleId = _user_RoleRepository.GetByCustomerId(customer.Id).Id;
                 role.CustomerId = customer.Id;
                 role.Id = userRoleId;
+                if ((int)role.ClientRole < 0 || (int)role.ClientRole > 1) role.ClientRole = Security.Roles.ClientRole.Customer;
                 UserRole _userRole = _user_RoleRepository.UpdateUserRoleModel(role);
             }
             catch(Exception er)
@@ -206,6 +227,7 @@ namespace RaalProjectPreview.BLL.Services
         {
             Order order = _orderRepository.GetOrderById(orderId);
             if (order == null) return ServiceResponseStatus.Failure;
+            if (order.Status == OrderStatus.Completed.ToString()) return ServiceResponseStatus.Failure;
             order.Status = OrderStatus.InProcessing.ToString();
             _orderRepository.UpdateOrder(order);
             return ServiceResponseStatus.Completed;

@@ -33,10 +33,12 @@ namespace RaalProjectPreview.Controllers
             if (response.Items == null) 
             {
                 response.responseStatus = ResponseStatus.Failed;
-                response.Message = "";
+                response.Message = "No items in shop";
                 response.Items = new List<Item>();
                 return Json(response);
             }
+            response.responseStatus = ResponseStatus.Completed;
+            response.Message = "Succsessful";
             return Json(response);
         }
         [Route("AddItemToCase")]
@@ -47,16 +49,16 @@ namespace RaalProjectPreview.Controllers
             if (Session["ID"] == null)
             {
                 response.responseStatus = BLL.Models.Enums.ResponseStatus.Failed;
-                response.Message = "Err";
+                response.Message = "Unauthorized user";
                 return Json(response);
             }
             int customerID = (int)Session["ID"];
             ResponseStatus status = customerService.AddItemToCase(request.ItemId, customerID);
             response.responseStatus = status;
             if (status != ResponseStatus.Completed)
-                response.Message = "";
+                response.Message = "New Item was added";
             else 
-                response.Message = "";
+                response.Message = "Unable to add new item";
 
             return Json(response);
         }
@@ -68,17 +70,18 @@ namespace RaalProjectPreview.Controllers
             if (Session["ID"] == null)
             {
                 response.responseStatus = BLL.Models.Enums.ResponseStatus.Failed;
-                response.Message = "Err";
+                response.Message = "Unauthorized user";
                 return Json(response);
             }
             int customerID = (int)Session["ID"];
-            Order order = customerService.CreateOrder(customerID);
-            if (order == null)
+            ResponseStatus status = customerService.CreateOrder(customerID);
+            if (status == ResponseStatus.Failed)
             {
                 response.responseStatus = ResponseStatus.Failed;
-                response.Message = "";
+                response.Message = "Unable to find selected order";
                 return Json(response);
             }
+            response.Message = "New order was created";
             response.responseStatus = ResponseStatus.Completed;
             return Json(response);
         }
@@ -98,11 +101,11 @@ namespace RaalProjectPreview.Controllers
             if (orders == null)
             {
                 response.responseStatus = ResponseStatus.Failed;
-                response.Message = "";
+                response.Message = "No orders";
                 return Json(response);
             }
             response.responseStatus = ResponseStatus.Completed;
-            response.Message = "";
+            response.Message = "Succsessful";
             response.Orders = orders;
             return Json(response);
         }
@@ -114,7 +117,7 @@ namespace RaalProjectPreview.Controllers
             if (Session["ID"] == null)
             {
                 response.responseStatus = BLL.Models.Enums.ResponseStatus.Failed;
-                response.Message = "Err";
+                response.Message = "Unauthorized user";
                 return Json(response);
             }
             int customerID = (int)Session["ID"];
@@ -122,11 +125,11 @@ namespace RaalProjectPreview.Controllers
             if (status == ResponseStatus.Failed)
             {
                 response.responseStatus = ResponseStatus.Failed;
-                response.Message = "";
+                response.Message = "Unable to close selected order";
                 return Json(response);
             }
             response.responseStatus = ResponseStatus.Completed;
-            response.Message = "";
+            response.Message = "Order was closed";
             return Json(response);
         }
         [Route("MyCase")]
@@ -137,11 +140,19 @@ namespace RaalProjectPreview.Controllers
             if (Session["ID"] == null)
             {
                 response.responseStatus = BLL.Models.Enums.ResponseStatus.Failed;
-                response.Message = "Err";
+                response.Message = "Unauthorized user";
                 return Json(response);
             }
             int customerID = (int)Session["ID"];
             response.CustomerCase = customerService.GetMyCase(customerID);
+            if (response.CustomerCase == null)
+            {
+                response.responseStatus = ResponseStatus.Failed;
+                response.Message = "No case";
+                return Json(response);
+            }
+            response.responseStatus = ResponseStatus.Completed;
+            response.Message = "Succsessful";
             return Json(response);
         }
     }

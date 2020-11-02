@@ -5,7 +5,9 @@
 		Orders: [],
 		Items: [],
 		CaseItems: [],
-		OnlyNewOrders: false
+		OnlyNewOrders: false,
+		alertClass: '',
+		alertMsg: ''
 	},
 	methods:
 	{
@@ -16,7 +18,11 @@
 				url: "/Customer/GetItemList",
 				success: function (response) {
 					vue.Items = response.Items;
-					if (vue.Items.length == 0) alert('Ничего не найдено');
+					if (vue.Items.length == 0) {
+						vue.alertMsg = 'No items in shop';
+						vue.alertClass = 'text-warning';
+						$('#alertModal').modal('show');
+					}
 				}
 			});
 		},
@@ -31,7 +37,14 @@
 				type: 'POST',
 				url: "/Customer/AddItemToCase",
 				success: function (response) {
-					vue.GetMyCase();
+					if (response.responseStatus == 2) {
+						vue.alertMsg = response.Message;
+						vue.alertClass = 'text-danger';
+						$('#alertModal').modal('show');
+					}
+					else {
+						vue.GetMyCase();
+					}
 				}
 			});
 		},
@@ -41,8 +54,15 @@
 				type: 'POST',
 				url: "/Customer/CreateOrder",
 				success: function (response) {
-					vue.ShowMyOrders();
-					vue.GetMyCase();
+					if (response.responseStatus == 2) {
+						vue.alertMsg = response.Message;
+						vue.alertClass = 'text-danger';
+						$('#alertModal').modal('show');
+					}
+					else {
+						vue.ShowMyOrders();
+						vue.GetMyCase();
+					}
 				}
 			});
 		},
@@ -53,7 +73,12 @@
 				url: "/Customer/ShowMyOrders",
 				success: function (response) {
 					vue.Orders = response.Orders;
-					if (response.Orders.length == 0) alert('Ничего не найдено');
+					if (response.Orders.length == 0) {
+						
+						vue.alertMsg = 'No active orders';
+						vue.alertClass = 'text-warning';
+						$('#alertModal').modal('show');
+					}
 				}
 			});
 		},
@@ -68,8 +93,15 @@
 				type: 'POST',
 				url: "/Customer/CloseOrder",
 				success: function (response) {
-					vue.ShowMyOrders();
-					vue.GetMyCase();
+					if (response.responseStatus == 2) {
+						vue.alertMsg = response.Message;
+						vue.alertClass = 'text-danger';
+						$('#alertModal').modal('show');
+					}
+					else {
+						vue.ShowMyOrders();
+						vue.GetMyCase();
+					}
 				}
 			});
 		},
@@ -79,6 +111,11 @@
 				type: 'POST',
 				url: "/Customer/MyCase",
 				success: function (response) {
+					if (response.CustomerCase.length == 0) {
+						vue.alertMsg = 'No items in case';
+						vue.alertClass = 'text-warning';
+						$('#alertModal').modal('show');
+					}
 					vue.CaseItems = response.CustomerCase;
 				}
 			});
