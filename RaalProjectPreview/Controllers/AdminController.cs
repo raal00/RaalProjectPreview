@@ -60,12 +60,12 @@ namespace RaalProjectPreview.Controllers
 
             if (status == ServiceResponseStatus.Completed) 
             {
-                response.Message = "Completed";
+                response.Message = "New item was added";
                 response.responseStatus = ResponseStatus.Completed; 
             }
             else 
             {
-                response.Message = "Fail";
+                response.Message = "Unable to add new item";
                 response.responseStatus = ResponseStatus.Failed; 
             }
             return Json(response);
@@ -84,7 +84,7 @@ namespace RaalProjectPreview.Controllers
             }
             else
             {
-                response.Message = "Fail";
+                response.Message = "Unable to delete selected item";
                 response.responseStatus = ResponseStatus.Failed;
             }
             return Json(response);
@@ -103,7 +103,7 @@ namespace RaalProjectPreview.Controllers
             }
             else
             {
-                response.Message = "Fail";
+                response.Message = "Unable to edit selected item";
                 response.responseStatus = ResponseStatus.Failed;
             }
             return Json(response);
@@ -126,7 +126,7 @@ namespace RaalProjectPreview.Controllers
             }
             else
             {
-                response.Message = "Fail";
+                response.Message = "Unable to add new user";
                 response.responseStatus = ResponseStatus.Failed;
             }
             return Json(response);
@@ -147,7 +147,7 @@ namespace RaalProjectPreview.Controllers
             }
             else
             {
-                response.Message = "Fail";
+                response.Message = "Unable to edit selected user";
                 response.responseStatus = ResponseStatus.Failed;
             }
             return Json(response);
@@ -166,7 +166,7 @@ namespace RaalProjectPreview.Controllers
             }
             else
             {
-                response.Message = "Fail";
+                response.Message = "Unable to delete selected user";
                 response.responseStatus = ResponseStatus.Failed;
             }
             return Json(response);
@@ -187,7 +187,7 @@ namespace RaalProjectPreview.Controllers
             }
             else
             {
-                response.Message = "Fail";
+                response.Message = "Unable to set completed status for selected order";
                 response.responseStatus = ResponseStatus.Failed;
             }
             return Json(response);
@@ -206,7 +206,7 @@ namespace RaalProjectPreview.Controllers
             }
             else
             {
-                response.Message = "Fail";
+                response.Message = "Unable to set inProcessing status for selected order";
                 response.responseStatus = ResponseStatus.Failed;
             }
             return Json(response);

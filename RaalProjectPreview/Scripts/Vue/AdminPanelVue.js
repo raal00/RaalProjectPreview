@@ -33,7 +33,9 @@ var adminPanelVue = new Vue({
 				ClientRole: 0
 			}
 		},
-		editMod: false
+		editMod: false,
+		alertClass: '',
+		alertMsg: ''
 	},
 	methods:
 	{
@@ -44,7 +46,11 @@ var adminPanelVue = new Vue({
 				url: "/Admin/ShowUsers",
 				success: function (response) {
 					vue.Users = response.UserList;
-					if (vue.Users.length == 0) alert('Ничего не найдено');
+					if (vue.Users.length == 0) {
+						vue.alertMsg = 'No users';
+						vue.alertClass = 'text-warning';
+						$('#alertModal').modal('show');
+					}
 				}
 			});
         },
@@ -55,7 +61,11 @@ var adminPanelVue = new Vue({
 				url: "/Admin/ShowOrders",
 				success: function (response) {
 					vue.Orders = response.Orders;
-					if (vue.Orders.length == 0) alert('Ничего не найдено');
+					if (vue.Orders.length == 0) {
+						vue.alertMsg = 'No orders';
+						vue.alertClass = 'text-warning';
+						$('#alertModal').modal('show');
+					}
 				}
 			});
 		},
@@ -66,7 +76,11 @@ var adminPanelVue = new Vue({
 				url: "/Admin/ShowItems",
 				success: function (response) {
 					vue.Items = response.Items;
-					if (vue.Items.length == 0) alert('Ничего не найдено');
+					if (vue.Items.length == 0) {
+						vue.alertMsg = 'No items';
+						vue.alertClass = 'text-warning';
+						$('#alertModal').modal('show');
+					}
 				}
 			});
 		},
@@ -119,6 +133,11 @@ var adminPanelVue = new Vue({
 				type: 'POST',
 				url: URL,
 				success: function (response) {
+					if (response.responseStatus == 2) {
+						vue.alertMsg = response.Message;
+						vue.alertClass = 'text-danger';
+						$('#alertModal').modal('show');
+                    }
 					vue.ShowAllUsers();
 				}
 			});
@@ -162,6 +181,11 @@ var adminPanelVue = new Vue({
 				type: 'POST',
 				url: URL,
 				success: function (response) {
+					if (response.responseStatus == 2) {
+						vue.alertMsg = response.Message;
+						vue.alertClass = 'text-danger';
+						$('#alertModal').modal('show');
+					}
 					vue.ShowAllItems();
 				}
 			});
@@ -179,7 +203,14 @@ var adminPanelVue = new Vue({
 				type: 'POST',
 				url: "/Admin/DeleteUser",
 				success: function (response) {
-					vue.Users.splice(id, 1);
+					if (response.responseStatus == 2) {
+						vue.alertMsg = response.Message;
+						vue.alertClass = 'text-danger';
+						$('#alertModal').modal('show');
+					}
+					else {
+						vue.Users.splice(id, 1);
+					}
 				}
 			});
 		},
@@ -194,7 +225,14 @@ var adminPanelVue = new Vue({
 				type: 'POST',
 				url: "/Admin/DeleteItemFromShop",
 				success: function (response) {
-					vue.Items.splice(id, 1);
+					if (response.responseStatus == 2) {
+						vue.alertMsg = response.Message;
+						vue.alertClass = 'text-danger';
+						$('#alertModal').modal('show');
+					}
+					else {
+						vue.Items.splice(id, 1);
+					}
 				}
 			});
 		},
@@ -210,6 +248,11 @@ var adminPanelVue = new Vue({
 				type: 'POST',
 				url: "/Admin/SetCompletedOrderStatus",
 				success: function (response) {
+					if (response.responseStatus == 2) {
+						vue.alertMsg = response.Message;
+						vue.alertClass = 'text-danger';
+						$('#alertModal').modal('show');
+					}
 					vue.ShowAllOrders();
 				}
 			});
@@ -225,6 +268,12 @@ var adminPanelVue = new Vue({
 				type: 'POST',
 				url: "/Admin/SetInProcessingOrderStatus",
 				success: function (response) {
+					console.log(response);
+					if (response.responseStatus == 2) {
+						vue.alertMsg = response.Message;
+						vue.alertClass = 'text-danger';
+						$('#alertModal').modal('show');
+					}
 					vue.ShowAllOrders();
 				}
 			});

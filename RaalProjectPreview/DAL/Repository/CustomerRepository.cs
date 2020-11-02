@@ -34,5 +34,10 @@ namespace RaalProjectPreview.DAL.Repository
                     where user.Id == id 
                     select user).FirstOrDefault();
         }
+        public int GetIdOfLastUser()
+        {
+            Customer customer = _DbSet.ToList().LastOrDefault();
+            return customer == null ? 0 : customer.Id;
+        }
     }
 }

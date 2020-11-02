@@ -50,23 +50,36 @@ namespace RaalProjectPreview.BLL.Services
             CustomerCaseItem caseItem = new CustomerCaseItem();
             caseItem.CustomerId = userId;
             caseItem.ItemId = itemId;
-            _customerCaseItemRepository.Create(caseItem);
+            try
+            {
+                _customerCaseItemRepository.Create(caseItem);
+            }
+            catch (Exception er)
+            {
+                return ResponseStatus.Failed;
+            }
             return ResponseStatus.Completed;
         }
-        public Order CreateOrder(int userId)
+        public ResponseStatus CreateOrder(int userId)
         {
             List<CustomerCaseItem> itemsPerCase = _customerCaseItemRepository.GetList(x => x.CustomerId == userId);
             if (itemsPerCase == null || itemsPerCase.Count == 0)
             {
-                return null;
+                return ResponseStatus.Failed;
             }
             Order order = new Order();
             order.CustomerId = userId;
             order.OrderDate = DateTime.Now;
             order.ShipmentDate = DateTime.Now.AddDays(7);
             order.Status = OrderStatus.New.ToString();
-            order = _orderRepository.Create(order);
-
+            try
+            {
+                order = _orderRepository.Create(order);
+            }
+            catch(Exception er)
+            {
+                return ResponseStatus.Failed;
+            }
             var orderItems = (from itemPerCase in itemsPerCase
                               group itemPerCase by itemPerCase.ItemId).ToList();
             foreach (IGrouping<int, CustomerCaseItem> oitem in orderItems)
@@ -76,10 +89,17 @@ namespace RaalProjectPreview.BLL.Services
                 orderItem.ItemPrice = _itemRepository.GetItemById(oitem.Key).Price;
                 orderItem.ItemId = oitem.Key;
                 orderItem.OrderId = order.Id;
-                _orderItemRepository.Create(orderItem);
+                try
+                {
+                    _orderItemRepository.Create(orderItem);
+                }
+                catch (Exception er)
+                {
+                    return ResponseStatus.Warning;
+                }
             }
             _customerCaseItemRepository.RemoveCaseByUserId(userId);
-            return order;
+            return ResponseStatus.Completed;
         }
         public List<Item> GetItemList()
         {

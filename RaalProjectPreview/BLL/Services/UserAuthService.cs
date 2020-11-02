@@ -52,7 +52,11 @@ namespace RaalProjectPreview.BLL.Services
             customer.Discount = 0;
             customer.Name = model.Name;
             customer = _customerRepository.Create(customer);
-            customer.Code = customer.Id.ToString() + "-" + DateTime.Now.Year.ToString();
+
+            string date = DateTime.Now.Year.ToString();
+            string lastCode = _customerRepository.GetIdOfLastUser().ToString();
+            while (lastCode.Length < 4) lastCode += '0';
+            customer.Code = date + "-" + lastCode;
 
             UserRole user_Role = new UserRole();
             user_Role.ClientRole = ClientRole.Customer;

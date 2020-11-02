@@ -193,21 +193,38 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <label for="itemModal_Code">Код</label>
-                    <input id="itemModal_Code" class="form-control" v-model="NewItem.Code" />
-                    
                     <label for="itemModal_Name">Название</label>
                     <input id="itemModal_Name" class="form-control" v-model="NewItem.Name" />
-                    
+
                     <label for="itemModal_Price">Цена</label>
                     <input id="itemModal_Price" class="form-control" v-model="NewItem.Price" />
-                    
+
                     <label for="itemModal_Category">Категория</label>
                     <input id="itemModal_Category" class="form-control" v-model="NewItem.Category" />
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                     <button type="button" v-on:click="CompleteItem()" class="btn btn-primary">Ok</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal" id="alertModal" tabindex="-1" role="dialog" aria-labelledby="alertModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title text-center" id="alertModalLabel">Server response</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <h4 v-bind:class="[alertClass]" class="text-center">
+                        {{alertMsg}}
+                    </h4>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Ok</button>
                 </div>
             </div>
         </div>
