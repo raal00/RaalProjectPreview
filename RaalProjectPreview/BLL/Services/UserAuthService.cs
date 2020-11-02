@@ -6,6 +6,7 @@ using RaalProjectPreview.DAL.Repository;
 using RaalProjectPreview.Security.Roles;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Web;
 
@@ -16,11 +17,11 @@ namespace RaalProjectPreview.BLL.Services
         private readonly CustomerRepository _customerRepository;
         private readonly User_RoleRepository _user_RoleRepository;
         private readonly AuthUserDataReposirory _authUserDataReposirory;
-        public UserAuthService()
+        public UserAuthService(DbContext context)
         {
-            _customerRepository = new CustomerRepository();
-            _user_RoleRepository = new User_RoleRepository();
-            _authUserDataReposirory = new AuthUserDataReposirory();
+            _customerRepository = new CustomerRepository(context);
+            _user_RoleRepository = new User_RoleRepository(context);
+            _authUserDataReposirory = new AuthUserDataReposirory(context);
         }
 
         public ServiceLoginResponse LoginUser(LoginRequestModel model)

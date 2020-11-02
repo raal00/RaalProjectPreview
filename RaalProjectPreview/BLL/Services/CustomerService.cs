@@ -8,6 +8,7 @@ using System.Data.Entity.Core.Metadata.Edm;
 using System.Web.Razor;
 using RaalProjectPreview.DAL.Enums;
 using System.Security.Cryptography;
+using System.Data.Entity;
 
 namespace RaalProjectPreview.BLL.Services
 {
@@ -20,15 +21,15 @@ namespace RaalProjectPreview.BLL.Services
         private readonly User_RoleRepository _user_RoleRepository;
         private readonly OrderRepository _orderRepository;
         private readonly CustomerCaseItemRepository _customerCaseItemRepository;
-        public CustomerService()
+        public CustomerService(DbContext context)
         {
-            _authUserDataReposirory = new AuthUserDataReposirory();
-            _customerRepository = new CustomerRepository();
-            _itemRepository = new ItemRepository();
-            _orderItemRepository = new OrderItemRepository();
-            _user_RoleRepository = new User_RoleRepository();
-            _orderRepository = new OrderRepository();
-            _customerCaseItemRepository = new CustomerCaseItemRepository();
+            _authUserDataReposirory = new AuthUserDataReposirory(context);
+            _customerRepository = new CustomerRepository(context);
+            _itemRepository = new ItemRepository(context);
+            _orderItemRepository = new OrderItemRepository(context);
+            _user_RoleRepository = new User_RoleRepository(context);
+            _orderRepository = new OrderRepository(context);
+            _customerCaseItemRepository = new CustomerCaseItemRepository(context);
         }
 
         public List<Order> GetCustomerOrders(int customerId)

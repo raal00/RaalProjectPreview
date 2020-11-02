@@ -1,11 +1,16 @@
 ﻿using RaalProjectPreview.DAL.Models.DBModels;
 using System;
+using System.Data.Entity;
 using System.Linq;
 
 namespace RaalProjectPreview.DAL.Repository
 {
     public class ItemRepository : RepositoryBase<Item>
     {
+        public ItemRepository(DbContext context) : base(context)
+        {
+
+        }
         public Item GetItemById(int id)
         {
             return _DbSet.Where(x => x.Id == id).FirstOrDefault();

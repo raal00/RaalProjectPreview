@@ -1,12 +1,17 @@
 ﻿using RaalProjectPreview.DAL.Models.DBModels;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 
 namespace RaalProjectPreview.DAL.Repository
 {
     public class OrderItemRepository : RepositoryBase<OrderItem>
     {
+        public OrderItemRepository(DbContext context) : base(context)
+        {
+
+        }
         public OrderItem GetOrderItemById(int id)
         {
             return _DbSet.Where(x => x.Id == id).FirstOrDefault();

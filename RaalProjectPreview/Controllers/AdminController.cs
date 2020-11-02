@@ -2,6 +2,7 @@
 using RaalProjectPreview.BLL.Models.Admin.Response;
 using RaalProjectPreview.BLL.Models.Enums;
 using RaalProjectPreview.BLL.Services;
+using RaalProjectPreview.DAL.Models;
 using RaalProjectPreview.DAL.Models.DBModels;
 using System;
 using System.Collections.Generic;
@@ -28,15 +29,22 @@ namespace RaalProjectPreview.Controllers
         public JsonResult ShowOrders()
         {
             ShowOrdersResponseModel response = new ShowOrdersResponseModel();
-            AdminService adminService = new AdminService();
-            response.Orders = adminService.ShowOrders();
+            AdminService adminService = new AdminService(ApplicationContext.GetInstance());
+            response.Orders = adminService.ShowOrders().Select(x=>new BLL.Models.Admin.OrderData() { 
+                 Id = x.Id,
+                 OrderDate = x.OrderDate.ToShortDateString(),
+                 CustomerId = x.CustomerId,
+                 OrderNumber = x.OrderNumber,
+                 ShipmentDate = x.ShipmentDate.ToShortDateString(),
+                 Status = x.Status
+            }).ToList();
             return Json(response);
         }
         [Route("ShowUsers")]
         public JsonResult ShowUsers()
         {
             ShowUserListResponseModel response = new ShowUserListResponseModel();
-            AdminService adminService = new AdminService();
+            AdminService adminService = new AdminService(ApplicationContext.GetInstance());
             response.UserList = adminService.ShowUsers();
             return Json(response);
         }
@@ -44,7 +52,7 @@ namespace RaalProjectPreview.Controllers
         public JsonResult ShowItems()
         {
             ShowItemsResponseModel response = new ShowItemsResponseModel();
-            AdminService adminService = new AdminService();
+            AdminService adminService = new AdminService(ApplicationContext.GetInstance());
             response.Items = adminService.ShowItems();
             return Json(response);
         }
@@ -55,7 +63,7 @@ namespace RaalProjectPreview.Controllers
         public JsonResult AddItemToShop(AddNewItemRequestModel request)
         {
             AddNewItemResponseModel response = new AddNewItemResponseModel();
-            AdminService adminService = new AdminService();
+            AdminService adminService = new AdminService(ApplicationContext.GetInstance());
             ServiceResponseStatus status = adminService.AddNewItem(request.Item);
 
             if (status == ServiceResponseStatus.Completed) 
@@ -74,7 +82,7 @@ namespace RaalProjectPreview.Controllers
         public JsonResult DeleteItemFromShop(DeleteItemFromShopRequestModel request)
         {
             DeleteItemFromShopResponseModel response = new DeleteItemFromShopResponseModel();
-            AdminService adminService = new AdminService();
+            AdminService adminService = new AdminService(ApplicationContext.GetInstance());
             ServiceResponseStatus status = adminService.DeleteItemFromShop(request.ItemId);
 
             if (status == ServiceResponseStatus.Completed)
@@ -93,7 +101,7 @@ namespace RaalProjectPreview.Controllers
         public JsonResult EditItemInShop(EditItemInShopRequestModel request)
         {
             EditItemInShopResponseModel response = new EditItemInShopResponseModel();
-            AdminService adminService = new AdminService();
+            AdminService adminService = new AdminService(ApplicationContext.GetInstance());
             ServiceResponseStatus status = adminService.EditItemInShop(request.Item);
 
             if (status == ServiceResponseStatus.Completed)
@@ -114,7 +122,7 @@ namespace RaalProjectPreview.Controllers
         public JsonResult AddNewUser(AddNewUserRequestModel request)
         {
             AddNewUserResponseModel response = new AddNewUserResponseModel();
-            AdminService adminService = new AdminService();
+            AdminService adminService = new AdminService(ApplicationContext.GetInstance());
             ServiceResponseStatus status = adminService.AddNewUser(request.AllUserData.Customer, 
                                                                    request.AllUserData.AuthUserData,
                                                                    request.AllUserData.UserRole);
@@ -135,7 +143,7 @@ namespace RaalProjectPreview.Controllers
         public JsonResult EditUser(EditUserRequestModel request)
         {
             EditUserResponseModel response = new EditUserResponseModel();
-            AdminService adminService = new AdminService();
+            AdminService adminService = new AdminService(ApplicationContext.GetInstance());
             ServiceResponseStatus status = adminService.EditUser(request.AllUserData.Customer, 
                                                                  request.AllUserData.AuthUserData, 
                                                                  request.AllUserData.UserRole);
@@ -156,7 +164,7 @@ namespace RaalProjectPreview.Controllers
         public JsonResult DeleteUser(DeleteUserRequestModel request)
         {
             DeleteUserResponseModel response = new DeleteUserResponseModel();
-            AdminService adminService = new AdminService();
+            AdminService adminService = new AdminService(ApplicationContext.GetInstance());
             ServiceResponseStatus status = adminService.DeleteUser(request.UserId);
 
             if (status == ServiceResponseStatus.Completed)
@@ -177,7 +185,7 @@ namespace RaalProjectPreview.Controllers
         public JsonResult SetCompletedOrderStatus(SetCompletedStatusRequestModel request)
         {
             SetCompletedStatusResponseModel response = new SetCompletedStatusResponseModel();
-            AdminService adminService = new AdminService();
+            AdminService adminService = new AdminService(ApplicationContext.GetInstance());
             ServiceResponseStatus status = adminService.SetCompletedOrderStatus(request.OrderId);
 
             if (status == ServiceResponseStatus.Completed)
@@ -196,7 +204,7 @@ namespace RaalProjectPreview.Controllers
         public JsonResult SetInProcessingOrderStatus(SetInProcessingStatusRequestModel request)
         {
             SetInProcessingResponseModel response = new SetInProcessingResponseModel();
-            AdminService adminService = new AdminService();
+            AdminService adminService = new AdminService(ApplicationContext.GetInstance());
             ServiceResponseStatus status = adminService.SetInProcessingOrderStatus(request.OrderId);
 
             if (status == ServiceResponseStatus.Completed)

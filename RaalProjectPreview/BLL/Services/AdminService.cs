@@ -6,6 +6,7 @@ using RaalProjectPreview.DAL.Models.DBModels;
 using RaalProjectPreview.DAL.Repository;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 
 namespace RaalProjectPreview.BLL.Services
@@ -18,14 +19,14 @@ namespace RaalProjectPreview.BLL.Services
         private readonly OrderItemRepository _orderItemRepository;
         private readonly User_RoleRepository _user_RoleRepository;
         private readonly OrderRepository _orderRepository;
-        public AdminService()
+        public AdminService(DbContext context)
         {
-            _authUserDataReposirory = new AuthUserDataReposirory();
-            _customerRepository = new CustomerRepository();
-            _itemRepository = new ItemRepository();
-            _orderItemRepository = new OrderItemRepository();
-            _user_RoleRepository = new User_RoleRepository();
-            _orderRepository = new OrderRepository();
+            _authUserDataReposirory = new AuthUserDataReposirory(context);
+            _customerRepository = new CustomerRepository(context);
+            _itemRepository = new ItemRepository(context);
+            _orderItemRepository = new OrderItemRepository(context);
+            _user_RoleRepository = new User_RoleRepository(context);
+            _orderRepository = new OrderRepository(context);
         }
 
         public List<Item> ShowItems()
@@ -192,7 +193,7 @@ namespace RaalProjectPreview.BLL.Services
             try
             {
                 Customer customer = _customerRepository.GetById(UserId);
-                if (customer == null) return ServiceResponseStatus.Completed;
+                if (customer == null) return ServiceResponseStatus.Failure;
                 _customerRepository.Delete(customer);
                 UserRole userRole = _user_RoleRepository.GetByCustomerId(UserId);
                 if (userRole != null) _user_RoleRepository.Delete(userRole);

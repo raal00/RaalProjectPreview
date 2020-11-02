@@ -1,11 +1,16 @@
 ﻿using RaalProjectPreview.DAL.Models.DBModels;
 using System;
+using System.Data.Entity;
 using System.Linq;
 
 namespace RaalProjectPreview.DAL.Repository
 {
     public class OrderRepository : RepositoryBase<Order>
     {
+        public OrderRepository(DbContext context) : base(context)
+        {
+
+        }
         public Order GetOrderById(int id)
         {
             return _DbSet.Where(x => x.Id == id).FirstOrDefault();

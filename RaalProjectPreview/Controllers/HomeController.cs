@@ -3,6 +3,7 @@ using RaalProjectPreview.BLL.Models.Home.Request;
 using RaalProjectPreview.BLL.Models.Home.Response;
 using RaalProjectPreview.BLL.Models.Home.ServiceModels.Response;
 using RaalProjectPreview.BLL.Services;
+using RaalProjectPreview.DAL.Models;
 using System.Web.Mvc;
 
 namespace RaalProjectPreview.Controllers
@@ -29,7 +30,7 @@ namespace RaalProjectPreview.Controllers
         public RedirectResult Login(LoginRequestModel request)
         {
             LoginResponseModel response = new LoginResponseModel();
-            UserAuthService authService = new UserAuthService();
+            UserAuthService authService = new UserAuthService(ApplicationContext.GetInstance());
             ServiceLoginResponse status = authService.LoginUser(request);
             Session["ID"] = status.UserId;
             Session["Role"] = status.Role.ToString();
@@ -65,7 +66,7 @@ namespace RaalProjectPreview.Controllers
         [HttpPost]
         public RedirectResult SignIn(AuthRequestModel request)
         {
-            UserAuthService authService = new UserAuthService();
+            UserAuthService authService = new UserAuthService(ApplicationContext.GetInstance());
             ResponseStatus status = authService.SignInUser(request);
             if (status == ResponseStatus.Completed)
             {
