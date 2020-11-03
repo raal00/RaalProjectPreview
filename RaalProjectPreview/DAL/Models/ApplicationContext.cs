@@ -12,16 +12,23 @@ namespace RaalProjectPreview.DAL.Models
         {
             if (AuthUserDatas.ToList().Where(x => x.Login == "Admin").FirstOrDefault() == null)
             {
+                int lastId;
+                Customer last = Customers.ToList().Last();
+                if (last != null) lastId = last.Id + 1;
+                else lastId = 1;
+
                 Customer admin = new Customer();
                 admin.Code = "XXXX";
                 admin.Address = "XXXX";
                 admin.Discount = 0;
                 admin.Name = "Admin";
+                admin.Id = lastId;
                 Customer customer = new Customer();
                 customer.Code = "RRRR";
                 customer.Address = "RRRR";
                 customer.Discount = 0;
                 customer.Name = "Customer";
+                customer.Id = lastId + 1;
 
                 admin = Customers.Add(admin);
                 customer = Customers.Add(customer);
