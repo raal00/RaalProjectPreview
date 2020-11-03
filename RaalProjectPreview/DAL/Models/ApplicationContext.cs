@@ -10,20 +10,18 @@ namespace RaalProjectPreview.DAL.Models
     {
         public ApplicationContext() : base("BaseContext")
         {
-            if (Customers.ToList().Count == 0)
+            if (AuthUserDatas.ToList().Where(x => x.Login == "Admin").FirstOrDefault() == null)
             {
                 Customer admin = new Customer();
-                admin.Id = 1;
                 admin.Code = "XXXX";
                 admin.Address = "XXXX";
                 admin.Discount = 0;
                 admin.Name = "Admin";
                 Customer customer = new Customer();
-                customer.Id = 2;
-                customer.Code = "XXXX";
-                customer.Address = "XXXX";
+                customer.Code = "RRRR";
+                customer.Address = "RRRR";
                 customer.Discount = 0;
-                customer.Name = "Admin";
+                customer.Name = "Customer";
 
                 admin = Customers.Add(admin);
                 customer = Customers.Add(customer);
