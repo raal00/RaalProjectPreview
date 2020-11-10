@@ -38,5 +38,11 @@ namespace RaalProjectPreview.DAL.Repository
                     where auth.CustomerId == id
                     select auth).FirstOrDefault();
         }
+        public bool HasLogin(string login)
+        {
+            return (from usr in _DbSet
+                    where usr.Login == login
+                    select usr).FirstOrDefault() == null;
+        }
     }
 }

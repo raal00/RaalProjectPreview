@@ -1,32 +1,42 @@
-﻿@model RaalProjectPreview.BLL.Models.Home.Request.LoginRequestModel
-<h2>Вход в систему</h2>
-
-@using (Html.BeginForm()) 
-{
-    @Html.AntiForgeryToken()
+﻿<h2>Вход в систему</h2>
 <div class="row">
     <div class="col-sm-6">
-        <div class="form-horizontal">
-            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-            <div class="form-group">
-                <label for="login" class="col-sm-2">Логин</label>
-                <div id="login" class="col-sm-10">
-                    @Html.EditorFor(model => model.Login, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.Login, "", new { @class = "text-danger" })
+        <div id="loginvue">
+            <div class="form-horizontal">
+                <div class="form-group">
+                    <label for="login" class="col-sm-2">Логин</label>
+                    <div id="login" class="col-sm-10">
+                        <input v-model="login" class="form-control" />
+                    </div>
                 </div>
-            </div>
-
-            <div class="form-group">
-                <label for="pass" class="col-sm-2">Логин</label>
-                <div id="pass" class="col-sm-10">
-                    @Html.EditorFor(model => model.Password, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
+                <div class="form-group">
+                    <label for="pass" class="col-sm-2">Пароль</label>
+                    <div id="pass" class="col-sm-10">
+                        <input type="password" v-model="pass" class="form-control" />
+                    </div>
                 </div>
+                <button type="button" class="btn" v-on:click="loginUser()">Вход</button>
+                <button type="button" v-show="managPanelBtnShow" class="btn" v-on:click="adminPanel()">Панель администратора</button>
+                <button type="button" v-show="custPanelBtnShow" class="btn" v-on:click="userPanel()">Панель покупателя</button>
             </div>
-
-            <div class="form-group">
-                <div class="col-md-offset-2 col-md-10">
-                    <input type="submit" value="Вход" class="btn btn-default" />
+            <div class="modal" id="alertModal" tabindex="-1" role="dialog" aria-labelledby="alertModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title text-center" id="alertModalLabel">Server response</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <h4 v-bind:class="[alertClass]" class="text-center">
+                                {{alertMsg}}
+                            </h4>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Ok</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -54,7 +64,68 @@
         </div>
     </div>    
 </div>
-}
 <div>
     <a id="register" class="btn btn-link" href="/Home/SignIn">Регистрация</a>
 </div>
+<script type="text/javascript">
+    const routes = [
+        { path: '/', beforeEnter: () => { window.location.href = '/Admin'; }, name: 'AdminPanel' },
+        { path: '/', beforeEnter: () => { window.location.href = '/Customer'; }, name: 'CusomerPanel' },
+    ];
+    const router = new VueRouter({
+        mode: 'history',
+        routes: routes
+    });
+
+    var loginvue = new Vue({
+	el: '#loginvue',
+	data:
+	{
+		login: '',
+        pass: '',
+		alertClass: '',
+		alertMsg: '',
+        custPanelBtnShow: false,
+        managPanelBtnShow: false
+	},
+	methods:
+	{
+		loginUser: function () {
+			var vue = this;
+            dataPost = {
+				Login: vue.login,
+                Password: vue.pass
+			};
+			$.ajax({
+				type: 'POST',
+                data: dataPost,
+				url: "/Home/Login",
+				success: function (response) {
+					vue.alertMsg = response.Message;
+                    if (response.responseStatus == 0) {
+                        vue.alertClass = 'text-success';
+                        if (response.Role == 0) {
+                           vue.custPanelBtnShow = false;
+                            vue.managPanelBtnShow = true;
+                        }
+                        else if (response.Role == 1) { 
+                            vue.custPanelBtnShow = true;
+                            vue.managPanelBtnShow = false;
+                        }
+                    }
+                    else {
+                        vue.alertClass = 'text-danger';
+                    }
+                    $('#alertModal').modal('show');
+				}
+			});
+        },
+        userPanel: function(){
+            router.push({ name: "CusomerPanel"});
+        },
+        adminPanel: function(){
+            router.push({ name: "AdminPanel"});
+        }
+	}
+});
+</script>

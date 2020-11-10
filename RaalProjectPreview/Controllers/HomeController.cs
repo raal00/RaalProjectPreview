@@ -26,8 +26,7 @@ namespace RaalProjectPreview.Controllers
         }
         [Route("Login")]
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public RedirectResult Login(LoginRequestModel request)
+        public JsonResult Login(LoginRequestModel request)
         {
             LoginResponseModel response = new LoginResponseModel();
             UserAuthService authService = new UserAuthService(ApplicationContext.GetInstance());
@@ -37,24 +36,25 @@ namespace RaalProjectPreview.Controllers
             if (status.Role == Security.Roles.ClientRole.Manager)
             {
                 Session["Authed"] = true;
-                return Redirect("/Admin");
+                response.Role = Security.Roles.ClientRole.Manager;
+                response.responseStatus = ResponseStatus.Completed;
+                response.Message = $"Привет менеджер {status.Name}!";
             }
             else if (status.Role == Security.Roles.ClientRole.Customer)
             {
                 Session["Authed"] = true;
-                return Redirect("/Customer");
+                response.Role = Security.Roles.ClientRole.Customer;
+                response.Message = $"Привет пользователь {status.Name}!";
+                response.responseStatus = ResponseStatus.Completed;
             }
             else
             {
+                response.Role = Security.Roles.ClientRole.Unauthorized;
+                response.Message = "Неверный логин и/или пароль";
+                response.responseStatus = ResponseStatus.Failed;
                 Session["Authed"] = false;
-                return Redirect("/Home/Login");
             }
-        }
-        [Route("LogOut")]
-        public RedirectResult LogOut()
-        {
-            Session["Authed"] = false;
-            return Redirect("/Home/Login");
+            return Json(response);
         }
         [Route("SignIn")]
         [HttpGet]
@@ -64,15 +64,21 @@ namespace RaalProjectPreview.Controllers
         }
         [Route("SignIn")]
         [HttpPost]
-        public RedirectResult SignIn(AuthRequestModel request)
+        public JsonResult SignIn(AuthRequestModel request)
         {
             UserAuthService authService = new UserAuthService(ApplicationContext.GetInstance());
+            AuthResponseModel response = new AuthResponseModel();
             ResponseStatus status = authService.SignInUser(request);
             if (status == ResponseStatus.Completed)
             {
                 Session["Role"] = "Customer";
+                response.responseStatus = ResponseStatus.Completed;
             }
-            return Redirect("/Home/Login");
+            else
+            {
+                response.responseStatus = ResponseStatus.Failed;
+            }
+            return Json(response);
         }
     }
 }

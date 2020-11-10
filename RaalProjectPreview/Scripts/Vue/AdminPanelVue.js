@@ -1,11 +1,191 @@
-﻿
+﻿Vue.component("order-grid", {
+	template: "#orders-template",
+	props: {
+		orders: [],
+		columns: [],
+		filterKey: ''
+	},
+	data: function () {
+		var sortOrders = {};
+		this.columns.forEach(function (key) {
+			sortOrders[key] = 1;
+		});
+		console.log(sortOrders);
+		return {
+			sortKey: '',
+			sortOrders: sortOrders
+		};
+	},
+
+	computed: {
+		filteredOrders: function () {
+			var sortKey = this.sortKey;
+			var filterKey = this.filterKey && this.filterKey.toLowerCase();
+			var order = this.sortOrders[sortKey] || 1;
+			var orders = this.orders;
+			if (filterKey) {
+				orders = orders.filter(function (row) {
+					return Object.keys(row).some(function (key) {
+						return (
+							String(row[key])
+								.toLowerCase()
+								.indexOf(filterKey) > -1
+						);
+					});
+				});
+			}
+			if (sortKey) {
+				orders = orders.slice().sort(function (a, b) {
+					a = a[sortKey];
+					b = b[sortKey];
+					return (a === b ? 0 : a > b ? 1 : -1) * order;
+				});
+			}
+			return orders;
+		}
+	},
+	filters: {
+		capitalize: function (str) {
+			return str.charAt(0).toUpperCase() + str.slice(1);
+		}
+	},
+	methods: {
+		sortBy: function (key) {
+			this.sortKey = key;
+			this.sortOrders[key] = this.sortOrders[key] * -1;
+		}
+	}
+});
+Vue.component("item-grid", {
+	template: "#items-template",
+	props: {
+		items: [],
+		columns: [],
+		filterKey: ''
+	},
+	data: function () {
+		var sortOrders = {};
+		this.columns.forEach(function (key) {
+			sortOrders[key] = 1;
+		});
+		console.log(sortOrders);
+		return {
+			sortKey: '',
+			sortOrders: sortOrders
+		};
+	},
+
+	computed: {
+		filteredItems: function () {
+			var sortKey = this.sortKey;
+			var filterKey = this.filterKey && this.filterKey.toLowerCase();
+			var order = this.sortOrders[sortKey] || 1;
+			var items = this.items;
+			if (filterKey) {
+				items = users.filter(function (row) {
+					return Object.keys(row).some(function (key) {
+						return (
+							String(row[key])
+								.toLowerCase()
+								.indexOf(filterKey) > -1
+						);
+					});
+				});
+			}
+			if (sortKey) {
+				items = items.slice().sort(function (a, b) {
+					a = a[sortKey];
+					b = b[sortKey];
+					return (a === b ? 0 : a > b ? 1 : -1) * order;
+				});
+			}
+			return items;
+		}
+	},
+	filters: {
+		capitalize: function (str) {
+			return str.charAt(0).toUpperCase() + str.slice(1);
+		}
+	},
+	methods: {
+		sortBy: function (key) {
+			this.sortKey = key;
+			this.sortOrders[key] = this.sortOrders[key] * -1;
+		}
+	}
+});
+Vue.component("user-grid", {
+	template: "#users-template",
+	props: {
+		users: [],
+		columns: [],
+		filterKey: ''
+	},
+	data: function () {
+		var sortOrders = {};
+		this.columns.forEach(function (key) {
+			sortOrders[key] = 1;
+		});
+		console.log(sortOrders);
+		return {
+			sortKey: '',
+			sortOrders: sortOrders
+		};
+	},
+	
+	computed: {
+		filteredUsers: function () {
+			var sortKey = this.sortKey;
+			var filterKey = this.filterKey && this.filterKey.toLowerCase();
+			var order = this.sortOrders[sortKey] || 1;
+			var users = this.users;
+			if (filterKey) {
+				users = users.filter(function (row) {
+					return Object.keys(row).some(function (key) {
+						return (
+							String(row[key])
+								.toLowerCase()
+								.indexOf(filterKey) > -1
+						);
+					});
+				});
+			}
+			if (sortKey) {
+				users = users.slice().sort(function (a, b) {
+					a = a[sortKey];
+					b = b[sortKey];
+					return (a === b ? 0 : a > b ? 1 : -1) * order;
+				});
+			}
+			return users;
+		}
+	},
+	filters: {
+		capitalize: function (str) {
+			return str.charAt(0).toUpperCase() + str.slice(1);
+		}
+	},
+	methods: {
+		sortBy: function (key) {
+			this.sortKey = key;
+			this.sortOrders[key] = this.sortOrders[key] * -1;
+		}
+	}
+});
+
 var adminPanelVue = new Vue({
 	el: '#adminPanelVue',
 	data:
 	{
 		Users: [],
-		Orders: [],
+		GridUsersCols: ['CustomerId', 'Name', 'Code', 'Address', 'Discount', 'Login', 'PasswordHash', 'ClientRole'],
 		Items: [],
+		GridItemsCols: ['Id', 'Code', 'Name', 'Price', 'Category'],
+		Orders: [],
+		GridOrdersCols: ['Id', 'CustomerId', 'OrderDate', 'ShipmentDate', 'OrderNumber', 'Status'],
+
+		searchQuery: '',
+		
 		NewItem: {
 			Id: -1,
 			Code: 'XX-XXXX-YYXX',
@@ -14,24 +194,14 @@ var adminPanelVue = new Vue({
 			Category: ''
 		},
 		NewUser: {
-			Customer: {
-				Id: -1,
-				Name: '',
-				Code: 'XXXX-YYYY',
-				Address: '',
-				Discount: 0.0
-			},
-			AuthUserData: {
-				Id: -1,
-				CustomerId: -1,
-				Login: '',
-				PasswordHash: ''
-			},
-			UserRole: {
-				Id: -1,
-				CustomerId: -1,
-				ClientRole: 0
-			}
+			CustomerId: -1,
+			Name: '',
+			Code: 'XXXX-YYYY',
+			Address: '',
+			Discount: 0.0,
+			Login: '',
+			PasswordHash: '',
+			ClientRole: 0
 		},
 		editMod: false,
 		alertClass: '',
@@ -88,31 +258,26 @@ var adminPanelVue = new Vue({
 		StartAddNewUser: function () {
 			var vue = this;
 			vue.editMod = false;
-			vue.NewUser.Customer.Name = '';
-			vue.NewUser.Customer.Code = 'XXXX-YYYY';
-			vue.NewUser.Customer.Address = '';
-			vue.NewUser.Customer.Discount = 0;
-
-			vue.NewUser.AuthUserData.Login = '';
-			vue.NewUser.AuthUserData.PasswordHash = '';
-
-			vue.NewUser.UserRole.ClientRole = 0;
+			vue.NewUser.Name = '';
+			vue.NewUser.Code = 'XXXX-YYYY';
+			vue.NewUser.Address = '';
+			vue.NewUser.Discount = 0;
+			vue.NewUser.Login = '';
+			vue.NewUser.PasswordHash = '';
+			vue.NewUser.ClientRole = 0;
 			$('#AddUserModal').modal('show');
 		},
-		StartEditUser: function (id) {
+		StartEditUser: function (user) {
 			var vue = this;
 			vue.editMod = true;
-			var user = vue.Users[id];
-			vue.NewUser.Customer.Id = user.Customer.Id;
-			vue.NewUser.Customer.Name = user.Customer.Name;
-			vue.NewUser.Customer.Code = user.Customer.Code;
-			vue.NewUser.Customer.Address = user.Customer.Address;
-			vue.NewUser.Customer.Discount = user.Customer.Discount;
-
-			vue.NewUser.AuthUserData.Login = user.AuthUserData.Login;
-			vue.NewUser.AuthUserData.PasswordHash = user.AuthUserData.PasswordHash;
-
-			vue.NewUser.UserRole.ClientRole = user.UserRole.ClientRole;
+			vue.NewUser.CustomerId = user.CustomerId;
+			vue.NewUser.Name = user.Name;
+			vue.NewUser.Code = user.Code;
+			vue.NewUser.Address = user.Address;
+			vue.NewUser.Discount = user.Discount;
+			vue.NewUser.Login = user.Login;
+			vue.NewUser.PasswordHash = user.PasswordHash;
+			vue.NewUser.ClientRole = user.ClientRole;
 			$('#AddUserModal').modal('show');
 		},
 		CompleteUser: function () {
@@ -152,10 +317,9 @@ var adminPanelVue = new Vue({
 			vue.NewItem.Category = '';
 			$('#AddItemModal').modal('show');
 		},
-		StartEditItem: function (id) {
+		StartEditItem: function (item) {
 			var vue = this;
 			vue.editMod = true;
-			var item = vue.Items[id];
 			vue.NewItem.Id = item.Id;
 			vue.NewItem.Code = item.Code;
 			vue.NewItem.Name = item.Name;
@@ -191,13 +355,11 @@ var adminPanelVue = new Vue({
 			});
 		},
 		
-		DeleteUser: function (id) {
+		DeleteUser: function (user) {
 			var vue = this;
-			var usrid = vue.Users[id].Customer.Id;
 			dataPost = {
-				UserId: usrid
+				UserId: user.CustomerId
 			};
-			console.log(usrid);
 			$.ajax({
 				data: dataPost,
 				type: 'POST',
@@ -209,16 +371,15 @@ var adminPanelVue = new Vue({
 						$('#alertModal').modal('show');
 					}
 					else {
-						vue.Users.splice(id, 1);
+						vue.ShowAllUsers();
 					}
 				}
 			});
 		},
-		DeleteItem: function (id) {
+		DeleteItem: function (item) {
 			var vue = this;
-			var indx = vue.Items[id].Id;
 			dataPost = {
-				ItemId: indx
+				ItemId: item.Id
 			};
 			$.ajax({
 				data: dataPost,
@@ -231,17 +392,16 @@ var adminPanelVue = new Vue({
 						$('#alertModal').modal('show');
 					}
 					else {
-						vue.Items.splice(id, 1);
+						vue.ShowAllItems();
 					}
 				}
 			});
 		},
 
-		SetCompletedOrderStatus: function (id) {
+		SetCompletedOrderStatus: function (order) {
 			var vue = this;
-			var indx = vue.Orders[id].Id;
 			dataPost = {
-				OrderId: indx
+				OrderId: order.Id
 			};
 			$.ajax({
 				data: dataPost,
@@ -257,11 +417,10 @@ var adminPanelVue = new Vue({
 				}
 			});
         },
-		SetInProcessingOrderStatus: function (id) {
+		SetInProcessingOrderStatus: function (order) {
 			var vue = this;
-			var indx = vue.Orders[id].Id;
 			dataPost = {
-				OrderId: indx
+				OrderId: order.Id
 			};
 			$.ajax({
 				data: dataPost,
