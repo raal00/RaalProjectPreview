@@ -1,10 +1,131 @@
-﻿var customerPanelVue = new Vue({
+﻿Vue.component("order-grid", {
+	template: "#orders-template",
+	props: {
+		orders: [],
+		columns: [],
+		filterKey: ''
+	},
+	data: function () {
+		var sortOrders = {};
+		this.columns.forEach(function (key) {
+			sortOrders[key] = 1;
+		});
+		console.log(sortOrders);
+		return {
+			sortKey: '',
+			sortOrders: sortOrders
+		};
+	},
+
+	computed: {
+		filteredOrders: function () {
+			var sortKey = this.sortKey;
+			var filterKey = this.filterKey && this.filterKey.toLowerCase();
+			var order = this.sortOrders[sortKey] || 1;
+			var orders = this.orders;
+			if (filterKey) {
+				orders = orders.filter(function (row) {
+					return Object.keys(row).some(function (key) {
+						return (
+							String(row[key])
+								.toLowerCase()
+								.indexOf(filterKey) > -1
+						);
+					});
+				});
+			}
+			if (sortKey) {
+				orders = orders.slice().sort(function (a, b) {
+					a = a[sortKey];
+					b = b[sortKey];
+					return (a === b ? 0 : a > b ? 1 : -1) * order;
+				});
+			}
+			return orders;
+		}
+	},
+	filters: {
+		capitalize: function (str) {
+			return str.charAt(0).toUpperCase() + str.slice(1);
+		}
+	},
+	methods: {
+		sortBy: function (key) {
+			this.sortKey = key;
+			this.sortOrders[key] = this.sortOrders[key] * -1;
+		}
+	}
+});
+Vue.component("item-grid", {
+	template: "#items-template",
+	props: {
+		items: [],
+		columns: [],
+		filterKey: ''
+	},
+	data: function () {
+		var sortOrders = {};
+		this.columns.forEach(function (key) {
+			sortOrders[key] = 1;
+		});
+		console.log(sortOrders);
+		return {
+			sortKey: '',
+			sortOrders: sortOrders
+		};
+	},
+
+	computed: {
+		filteredItems: function () {
+			var sortKey = this.sortKey;
+			var filterKey = this.filterKey && this.filterKey.toLowerCase();
+			var order = this.sortOrders[sortKey] || 1;
+			var items = this.items;
+			if (filterKey) {
+				items = users.filter(function (row) {
+					return Object.keys(row).some(function (key) {
+						return (
+							String(row[key])
+								.toLowerCase()
+								.indexOf(filterKey) > -1
+						);
+					});
+				});
+			}
+			if (sortKey) {
+				items = items.slice().sort(function (a, b) {
+					a = a[sortKey];
+					b = b[sortKey];
+					return (a === b ? 0 : a > b ? 1 : -1) * order;
+				});
+			}
+			return items;
+		}
+	},
+	filters: {
+		capitalize: function (str) {
+			return str.charAt(0).toUpperCase() + str.slice(1);
+		}
+	},
+	methods: {
+		sortBy: function (key) {
+			this.sortKey = key;
+			this.sortOrders[key] = this.sortOrders[key] * -1;
+		}
+	}
+});
+
+var customerPanelVue = new Vue({
 	el: '#customerPanelVue',
 	data:
 	{
 		Orders: [],
+		GridOrdersCols: ['Id', 'CustomerId', 'OrderDate', 'ShipmentDate', 'OrderNumber', 'Status'],
 		Items: [],
+		GridItemsCols: ['Id', 'Code', 'Name', 'Price', 'Category'],
+
 		CaseItems: [],
+		searchQuery: '',
 		OnlyNewOrders: false,
 		alertClass: '',
 		alertMsg: ''
@@ -26,11 +147,10 @@
 				}
 			});
 		},
-		AddItemToCase: function (id) {
+		AddItemToCase: function (item) {
 			var vue = this;
-			var indx = vue.Items[id].Id;
 			dataPost = {
-				ItemId: indx
+				ItemId: item.Id
 			};
 			$.ajax({
 				data: dataPost,
@@ -82,11 +202,10 @@
 				}
 			});
 		},
-		CloseOrder: function (id) {
+		CloseOrder: function (item) {
 			var vue = this;
-			var indx = vue.Orders[id].Id;
 			dataPost = {
-				OrderId: indx
+				OrderId: item.Id
 			};
 			$.ajax({
 				data: dataPost,

@@ -195,6 +195,7 @@
     <Compile Include="Security\Roles\ClientRole.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\Css\CustomerPanel.css" />
     <Content Include="favicon.ico" />
     <Content Include="BLL\Readme.txt" />
     <Content Include="Content\bootstrap-theme.css" />
