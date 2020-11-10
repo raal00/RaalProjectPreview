@@ -1,6 +1,83 @@
-﻿
-<h3>Панель администратора</h3>
-
+﻿<h3>Панель администратора</h3>
+<link rel="stylesheet" type="text/css" href="~/Content/Css/AdminPanel.css" />
+<script type="text/x-template" id="users-template">
+    <table>
+        <thead>
+            <tr>
+                <th v-for="key in columns"
+                    v-on:click="sortBy(key)"
+                    :class="{ active: sortKey == key }">
+                    {{ key | capitalize }}
+                    <span class="arrow" :class="sortOrders[key] > 0 ? 'asc' : 'dsc'">
+                    </span>
+                </th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr v-for="entry in filteredUsers">
+                <td v-for="key in columns">
+                    {{ entry[key] }}
+                </td>
+                <td><button type="button" class="btn btn-default" v-on:click="adminPanelVue.StartEditUser(entry)">edit</button></td>
+                <td><button type="button" class="btn btn-default text-danger" v-on:click="adminPanelVue.DeleteUser(entry)">delete</button></td>
+            </tr>
+        </tbody>
+    </table>
+</script>
+<script type="text/x-template" id="items-template">
+    <table>
+        <thead>
+            <tr>
+                <th v-for="key in columns"
+                    v-on:click="sortBy(key)"
+                    :class="{ active: sortKey == key }">
+                    {{ key | capitalize }}
+                    <span class="arrow" :class="sortOrders[key] > 0 ? 'asc' : 'dsc'">
+                    </span>
+                </th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr v-for="entry in filteredItems">
+                <td v-for="key in columns">
+                    {{ entry[key] }}
+                </td>
+                <td><button type="button" class="btn btn-default" v-on:click="adminPanelVue.StartEditItem(entry)">edit</button></td>
+                <td><button type="button" class="btn btn-default text-danger" v-on:click="adminPanelVue.DeleteItem(entry)">delete</button></td>
+            </tr>
+        </tbody>
+    </table>
+</script>
+<script type="text/x-template" id="orders-template">
+    <table>
+        <thead>
+            <tr>
+                <th v-for="key in columns"
+                    v-on:click="sortBy(key)"
+                    :class="{ active: sortKey == key }">
+                    {{ key | capitalize }}
+                    <span class="arrow" :class="sortOrders[key] > 0 ? 'asc' : 'dsc'">
+                    </span>
+                </th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr v-for="entry in filteredOrders">
+                <td v-for="key in columns">
+                    {{ entry[key] }}
+                </td>
+                <td><button type="button" class="btn btn-default text-primary" v-on:click="adminPanelVue.SetInProcessingOrderStatus(entry)">set inProcessing</button></td>
+                <td><button type="button" class="btn btn-default text-success" v-on:click="adminPanelVue.SetCompletedOrderStatus(entry)">set completed</button></td>
+            </tr>
+        </tbody>
+    </table>
+</script>
 <div id="adminPanelVue">
     <div class="btn-group" role="group">
         <button type="button" v-on:click="ShowAllItems()" class="btn btn-secondary">Показать товары</button>
@@ -12,140 +89,26 @@
         <button type="button" class="btn btn-secondary" data-toggle="modal" v-on:click="StartAddNewUser()">Добавить покупателя</button>
     </div>
 
-    <div style="margin-top: .4em;" class="table-responsive">
-        <table class="table table-striped table-bordered">
-            <thead>
-                <tr>
-                    <th></th>
-                    <th class="success" colspan="5">Данные пользователя</th>
-                    <th class="warning" colspan="2">Авторизация</th>
-                    <th colspan="3"></th>
-                </tr>
-                <tr>
-                    <th>#</th>
-                    <th>Id</th>
-                    <th>Name</th>
-                    <th>Code</th>
-                    <th>Address</th>
-                    <th>Discount</th>
-                    <th>Login</th>
-                    <th>Password hash</th>
-                    <th>Role</th>
-                    <th></th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="(user, index) in Users">
-                    <td>{{index}}</td>
-
-                    <td>{{user.Customer.Id}}</td>
-                    <td>{{user.Customer.Name}}</td>
-                    <td>{{user.Customer.Code}}</td>
-                    <td>{{user.Customer.Address}}</td>
-                    <td>{{user.Customer.Discount}}</td>
-
-                    <td>{{user.AuthUserData.Login}}</td>
-                    <td>{{user.AuthUserData.PasswordHash}}</td>
-
-                    <td>{{user.UserRole.ClientRole}}</td>
-                    <td>
-                        <button class="btn btn-danger" v-on:click="DeleteUser(index)" type="button">
-                            delete
-                        </button>
-                    </td>
-                    <td>
-                        <button class="btn btn-secondary" v-on:click="StartEditUser(index)" type="button">
-                            edit
-                        </button>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+    <div style="margin-top: .2em">
+        <dfn>Пользователи</dfn>
+        <user-grid :users="Users"
+                   :columns="GridUsersCols"
+                   :filter-key="searchQuery">
+        </user-grid>
     </div>
-    <div class="table-responsive">
-        <table class="table table-striped table-bordered">
-            <thead>
-                <tr>
-                    <th></th>
-                    <th class="success" colspan="6">Данные заказа</th>
-                    <th colspan="2"></th>
-                </tr>
-                <tr>
-                    <th>#</th>
-                    <th>Id</th>
-                    <th>Customer</th>
-                    <th>Order date</th>
-                    <th>Shipment date</th>
-                    <th>Order number</th>
-                    <th>Status</th>
-                    <th></th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="(order, index) in Orders">
-                    <td>{{index}}</td>
-                    <td>{{order.Id}}</td>
-                    <td>{{order.CustomerId}}</td>
-                    <td>{{order.OrderDate}}</td>
-                    <td>{{order.ShipmentDate}}</td>
-                    <td>{{order.OrderNumber}}</td>
-                    <td>{{order.Status}}</td>
-                    <td>
-                        <button class="btn btn-warning" v-on:click="SetCompletedOrderStatus(index)" type="button">
-                            Закрыть
-                        </button>
-                    </td>
-                    <td>
-                        <button class="btn btn-warning" v-on:click="SetInProcessingOrderStatus(index)" type="button">
-                            Подтвердить
-                        </button>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+    <div style="margin-top: .2em">
+        <dfn>Товары</dfn>
+        <item-grid :items="Items"
+                   :columns="GridItemsCols"
+                   :filter-key="searchQuery">
+        </item-grid>
     </div>
-    <div class="table-responsive">
-        <table class="table table-striped table-bordered">
-            <thead>
-                <tr>
-                    <th></th>
-                    <th class="success" colspan="5">Данные товара</th>
-                    <th colspan="2"></th>
-                </tr>
-                <tr>
-                    <th>#</th>
-                    <th>Id</th>
-                    <th>Name</th>
-                    <th>Code</th>
-                    <th>Price</th>
-                    <th>Category</th>
-                    <th></th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="(item, index) in Items">
-                    <td>{{index}}</td>
-                    <td>{{item.Id}}</td>
-                    <td>{{item.Name}}</td>
-                    <td>{{item.Code}}</td>
-                    <td>{{item.Price}}</td>
-                    <td>{{item.Category}}</td>
-                    <td>
-                        <button class="btn btn-danger" v-on:click="DeleteItem(index)" type="button">
-                            delete
-                        </button>
-                    </td>
-                    <td>
-                        <button class="btn btn-secondary" v-on:click="StartEditItem(index)" type="button">
-                            edit
-                        </button>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+    <div style="margin-top: .2em">
+        <dfn>Заказы</dfn>
+        <order-grid :orders="Orders"
+                   :columns="GridOrdersCols"
+                   :filter-key="searchQuery">
+        </order-grid>
     </div>
     <div class="modal" id="AddUserModal" tabindex="-1" role="dialog" aria-labelledby="AddUserModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
@@ -158,23 +121,23 @@
                 </div>
                 <div class="modal-body">
                     <label for="userModal_Name">Имя</label>
-                    <input id="userModal_Name" class="form-control" v-model="NewUser.Customer.Name" />
+                    <input id="userModal_Name" class="form-control" v-model="NewUser.Name" />
                     <label for="userModal_Code">Код</label>
-                    <input id="userModal_Code" class="form-control" v-model="NewUser.Customer.Code" />
+                    <input id="userModal_Code" class="form-control" v-model="NewUser.Code" />
                     <label for="userModal_Address">Адрес</label>
-                    <input id="userModal_Address" class="form-control" v-model="NewUser.Customer.Address" />
+                    <input id="userModal_Address" class="form-control" v-model="NewUser.Address" />
                     <label for="userModal_Discount">Скидка</label>
-                    <input id="userModal_Discount" class="form-control" v-model="NewUser.Customer.Discount" />
+                    <input id="userModal_Discount" class="form-control" v-model="NewUser.Discount" />
                     <hr />
 
                     <label for="userModal_Login">Логин</label>
-                    <input id="userModal_Login" class="form-control" v-model="NewUser.AuthUserData.Login" />
+                    <input id="userModal_Login" class="form-control" v-model="NewUser.Login" />
                     <label for="userModal_PasswordHash">Хэш пароля</label>
-                    <input id="userModal_PasswordHash" class="form-control" v-model="NewUser.AuthUserData.PasswordHash" />
+                    <input id="userModal_PasswordHash" class="form-control" v-model="NewUser.PasswordHash" />
                     <hr />
 
                     <label for="userModal_ClientRole">Роль (0-админ/1-покупатель)</label>
-                    <input id="userModal_ClientRole" class="form-control" v-model="NewUser.UserRole.ClientRole" />
+                    <input id="userModal_ClientRole" class="form-control" v-model="NewUser.ClientRole" />
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>

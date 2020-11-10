@@ -1,58 +1,112 @@
-﻿@model RaalProjectPreview.BLL.Models.Home.Request.AuthRequestModel
-<h2>Регистрация</h2>
-@using (Html.BeginForm()) 
-{
-    @Html.AntiForgeryToken()
-    
+﻿<h2>Регистрация</h2>
+<div id="signinvue">
     <div class="form-horizontal">
         <hr />
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
         <div class="form-group">
             <label for="name" class="col-sm-2">Имя</label>
             <div id="name" class="col-sm-10">
-                @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                <input type="text" class="form-control" v-model="name"/>
             </div>
         </div>
         <div class="form-group">
             <label for="address" class="col-sm-2">Адрес</label>
-            <div id ="address" class="col-sm-10">
-                @Html.EditorFor(model => model.Address, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Address, "", new { @class = "text-danger" })
+            <div id="address" class="col-sm-10">
+                <input type="text" class="form-control" v-model="addr" />
             </div>
         </div>
 
         <div class="form-group">
             <label for="login" class="col-sm-2">Логин</label>
             <div id="login" class="col-sm-10">
-                @Html.EditorFor(model => model.Login, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Login, "", new { @class = "text-danger" })
+                <input type="tel" class="form-control" v-model="login" />
             </div>
         </div>
 
         <div class="form-group">
             <label for="pass" class="col-sm-2">Пароль</label>
             <div id="pass" class="col-sm-10">
-                @Html.EditorFor(model => model.Password, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
+                <input type="password" class="form-control" v-model="pass" />
             </div>
         </div>
 
         <div class="form-group">
             <label for="pass2" class="col-sm-2">Повторить пароль</label>
-            <div id ="pass2" class="col-sm-10">
-                @Html.EditorFor(model => model.ConfirmPassword, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.ConfirmPassword, "", new { @class = "text-danger" })
+            <div id="pass2" class="col-sm-10">
+                <input type="password" class="form-control" v-model="pass2" />
             </div>
         </div>
-
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Создать" class="btn btn-default" />
+        <button type="button" class="btn" v-on:click="signinUser()">Регистрация</button> 
+    </div>
+    <div class="modal" id="alertModal" tabindex="-1" role="dialog" aria-labelledby="alertModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title text-center" id="alertModalLabel">Server response</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <h4 v-bind:class="[alertClass]" class="text-center">
+                        {{alertMsg}}
+                    </h4>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Ok</button>
+                </div>
             </div>
         </div>
     </div>
-}
+</div>
 <div>
     <a id="login" class="btn btn-link" href="/Home/Login">Вход в систему</a>
 </div>
+<script type="text/javascript">
+    var signinvue = new Vue({
+	el: '#signinvue',
+	data:
+	{
+        name: '',
+        addr: '',
+		login: '',
+        pass: '',
+        pass2: '',
+		alertClass: '',
+		alertMsg: ''
+    },
+	methods:
+	{
+		signinUser: function () {
+			var vue = this;
+            if (vue.pass != vue.pass2){
+                vue.alertClass = 'text-danger';
+                vue.alertMsg = 'Пароли не совпавдают';
+                $('#alertModal').modal('show');       
+            }
+            dataPost = {
+                Name: vue.name,
+                CustomerCode: '',
+                Address: vue.addr,
+				Login: vue.login,
+                Password: vue.pass,
+                ConfirmPassword: vue.pass2
+			};
+			$.ajax({
+				type: 'POST',
+                data: dataPost,
+				url: "/Home/SignIn",
+				success: function (response) {
+                    if (response.responseStatus == 0) {
+                        window.location.href = '/Home/Login';
+                    }
+                    else {
+                        vue.alertClass = 'text-danger';
+                        vue.alertMsg = 'Пользователь с таким логином уже есть';
+                        $('#alertModal').modal('show');                
+                    }
+				}
+			});
+        }
+	}
+});
+</script>

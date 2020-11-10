@@ -131,9 +131,7 @@ namespace RaalProjectPreview.Controllers
         {
             AddNewUserResponseModel response = new AddNewUserResponseModel();
             AdminService adminService = new AdminService(ApplicationContext.GetInstance());
-            ServiceResponseStatus status = adminService.AddNewUser(request.AllUserData.Customer, 
-                                                                   request.AllUserData.AuthUserData,
-                                                                   request.AllUserData.UserRole);
+            ServiceResponseStatus status = adminService.AddNewUser(request.AllUserData);
 
             if (status == ServiceResponseStatus.Completed)
             {
@@ -152,9 +150,7 @@ namespace RaalProjectPreview.Controllers
         {
             EditUserResponseModel response = new EditUserResponseModel();
             AdminService adminService = new AdminService(ApplicationContext.GetInstance());
-            ServiceResponseStatus status = adminService.EditUser(request.AllUserData.Customer, 
-                                                                 request.AllUserData.AuthUserData, 
-                                                                 request.AllUserData.UserRole);
+            ServiceResponseStatus status = adminService.EditUser(request.AllUserData);
 
             if (status == ServiceResponseStatus.Completed)
             {

@@ -10,7 +10,7 @@
 		alertMsg: ''
 	},
 	methods:
-	{
+	{ 
 		GetItemList: function () {
 			var vue = this;
 			$.ajax({

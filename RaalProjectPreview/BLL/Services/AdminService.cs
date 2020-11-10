@@ -56,9 +56,14 @@ namespace RaalProjectPreview.BLL.Services
                         join login in _authUserDataReposirory.GetAll() on customer.Id equals login.CustomerId
                         select new AllUserData
                         {
-                            AuthUserData = login,
-                            Customer = customer,
-                            UserRole = role
+                            CustomerId = customer.Id,
+                            ClientRole = role.ClientRole, 
+                            Address = customer.Address, 
+                            Code = customer.Code, 
+                            Discount = customer.Discount, 
+                            Login = login.Login, 
+                            Name = customer.Name, 
+                            PasswordHash = login.PasswordHash
                         }
                         ).ToList();
             return response;
@@ -128,32 +133,41 @@ namespace RaalProjectPreview.BLL.Services
         /// <param name="authUserData"></param>
         /// <param name="role"></param>
         /// <returns></returns>
-        public ServiceResponseStatus AddNewUser(Customer customer, AuthUserData authUserData, UserRole role)
+        public ServiceResponseStatus AddNewUser(AllUserData customer)
         {
             
             string date = DateTime.Now.Year.ToString();
             string lastCode = _customerRepository.GetIdOfLastUser().ToString();
             while(lastCode.Length < 4) lastCode += '0';
             customer.Code = date + "-" + lastCode;
-
+            Customer newCustomer = new Customer();
+            newCustomer.Code = customer.Code;
+            newCustomer.Address = customer.Address;
+            newCustomer.Discount = customer.Discount;
+            newCustomer.Name = customer.Name;
             try
             {
-                customer = _customerRepository.Create(customer);
+                newCustomer = _customerRepository.Create(newCustomer);
             }
             catch(Exception er)
             {
                 return ServiceResponseStatus.Failure;
             }
-            authUserData.CustomerId = customer.Id;
-            if (authUserData.Login == null || authUserData.PasswordHash == null) 
+            AuthUserData newAuth = new AuthUserData();
+            newAuth.CustomerId = newCustomer.Id;
+            newAuth.Login = customer.Login;
+            newAuth.PasswordHash = customer.PasswordHash;
+            if (newAuth.Login == null || newAuth.PasswordHash == null) 
             {
-                _customerRepository.Delete(customer);
+                _customerRepository.Delete(newCustomer);
                 return ServiceResponseStatus.Failure; 
             }
-            _authUserDataReposirory.Create(authUserData);
-            role.CustomerId = customer.Id;
-            if ((int)role.ClientRole < 0 || (int)role.ClientRole > 1) role.ClientRole = Security.Roles.ClientRole.Customer;
-            _user_RoleRepository.Create(role);
+            _authUserDataReposirory.Create(newAuth);
+            UserRole newRole = new UserRole();
+            newRole.CustomerId = newCustomer.Id;
+            newRole.ClientRole = customer.ClientRole;
+            if ((int)newRole.ClientRole < 0 || (int)newRole.ClientRole > 1) newRole.ClientRole = Security.Roles.ClientRole.Customer;
+            _user_RoleRepository.Create(newRole);
             return ServiceResponseStatus.Completed;
         }
         /// <summary>
@@ -163,22 +177,26 @@ namespace RaalProjectPreview.BLL.Services
         /// <param name="authUserData"></param>
         /// <param name="role"></param>
         /// <returns></returns>
-        public ServiceResponseStatus EditUser(Customer customer, AuthUserData authUserData, UserRole role) 
+        public ServiceResponseStatus EditUser(AllUserData customer) 
         {
             try
             {
-                Customer _customer = _customerRepository.UpdateCustomer(customer);
-                
-                int authId = _authUserDataReposirory.GetByUserId(customer.Id).Id;
-                authUserData.Id = authId;
-                authUserData.CustomerId = customer.Id;
-                AuthUserData _authUserData = _authUserDataReposirory.UpdateAuthUserData(authUserData);
+                Customer editCustomer = _customerRepository.GetById(customer.CustomerId);
+                editCustomer.Name = customer.Name;
+                editCustomer.Discount = customer.Discount;
+                editCustomer.Code = customer.Code;
+                editCustomer.Address = customer.Address;
+                editCustomer = _customerRepository.UpdateCustomer(editCustomer);
 
-                int userRoleId = _user_RoleRepository.GetByCustomerId(customer.Id).Id;
-                role.CustomerId = customer.Id;
-                role.Id = userRoleId;
-                if ((int)role.ClientRole < 0 || (int)role.ClientRole > 1) role.ClientRole = Security.Roles.ClientRole.Customer;
-                UserRole _userRole = _user_RoleRepository.UpdateUserRoleModel(role);
+                AuthUserData editAuth = _authUserDataReposirory.GetByUserId(editCustomer.Id);
+                editAuth.Login = customer.Login;
+                editAuth.PasswordHash = customer.PasswordHash;
+                editAuth = _authUserDataReposirory.UpdateAuthUserData(editAuth);
+
+                UserRole editRole = _user_RoleRepository.GetByCustomerId(editCustomer.Id);
+                editRole.ClientRole = customer.ClientRole;
+                if ((int)editRole.ClientRole < 0 || (int)editRole.ClientRole > 1) editRole.ClientRole = Security.Roles.ClientRole.Customer;
+                UserRole _userRole = _user_RoleRepository.UpdateUserRoleModel(editRole);
             }
             catch(Exception er)
             {

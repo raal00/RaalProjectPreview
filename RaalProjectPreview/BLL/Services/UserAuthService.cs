@@ -28,7 +28,6 @@ namespace RaalProjectPreview.BLL.Services
         {
             ServiceLoginResponse response = new ServiceLoginResponse();
             AuthUserData userData = new AuthUserData();
-            List<AuthUserData> aa = _authUserDataReposirory.GetAll(); 
             userData.Login = model.Login;
             userData.PasswordHash = model.Password.GetHashCode().ToString();
             userData = _authUserDataReposirory.GetUserByLoginAndPasswordHash(userData);
@@ -48,7 +47,7 @@ namespace RaalProjectPreview.BLL.Services
             return response;
         }
         public ResponseStatus SignInUser(AuthRequestModel model) {
-            
+            if (!(_authUserDataReposirory.HasLogin(model.Login))) return ResponseStatus.Failed;
             Customer customer = new Customer();
             customer.Address = model.Address;
             customer.Discount = 0;
