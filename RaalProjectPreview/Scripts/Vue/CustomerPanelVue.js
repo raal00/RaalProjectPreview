@@ -82,7 +82,7 @@ Vue.component("item-grid", {
 			var order = this.sortOrders[sortKey] || 1;
 			var items = this.items;
 			if (filterKey) {
-				items = users.filter(function (row) {
+				items = items.filter(function (row) {
 					return Object.keys(row).some(function (key) {
 						return (
 							String(row[key])
@@ -125,13 +125,19 @@ var customerPanelVue = new Vue({
 		GridItemsCols: ['Id', 'Code', 'Name', 'Price', 'Category'],
 
 		CaseItems: [],
-		searchQuery: '',
+		searchQueryItem: '',
+		searchQueryOrder: '',
 		OnlyNewOrders: false,
 		alertClass: '',
-		alertMsg: ''
+		alertMsg: '',
+		showModalAlert: false
 	},
 	methods:
-	{ 
+	{	
+		CloseModal: function(){
+			var vue = this;
+			vue.showModalAlert = false;
+		},
 		GetItemList: function () {
 			var vue = this;
 			$.ajax({
@@ -142,7 +148,7 @@ var customerPanelVue = new Vue({
 					if (vue.Items.length == 0) {
 						vue.alertMsg = 'No items in shop';
 						vue.alertClass = 'text-warning';
-						$('#alertModal').modal('show');
+						vue.showModalAlert = true;
 					}
 				}
 			});
@@ -160,7 +166,7 @@ var customerPanelVue = new Vue({
 					if (response.responseStatus == 2) {
 						vue.alertMsg = response.Message;
 						vue.alertClass = 'text-danger';
-						$('#alertModal').modal('show');
+						vue.showModalAlert = true;
 					}
 					else {
 						vue.GetMyCase();
@@ -177,7 +183,7 @@ var customerPanelVue = new Vue({
 					if (response.responseStatus == 2) {
 						vue.alertMsg = response.Message;
 						vue.alertClass = 'text-danger';
-						$('#alertModal').modal('show');
+						vue.showModalAlert = true;
 					}
 					else {
 						vue.ShowMyOrders();
@@ -193,11 +199,11 @@ var customerPanelVue = new Vue({
 				url: "/Customer/ShowMyOrders",
 				success: function (response) {
 					vue.Orders = response.Orders;
-					if (response.Orders.length == 0) {
+					if (response.Orders == null || response.Orders.length == 0) {
 						
 						vue.alertMsg = 'No active orders';
 						vue.alertClass = 'text-warning';
-						$('#alertModal').modal('show');
+						vue.showModalAlert = true;
 					}
 				}
 			});
@@ -215,7 +221,7 @@ var customerPanelVue = new Vue({
 					if (response.responseStatus == 2) {
 						vue.alertMsg = response.Message;
 						vue.alertClass = 'text-danger';
-						$('#alertModal').modal('show');
+						vue.showModalAlert = true;
 					}
 					else {
 						vue.ShowMyOrders();
@@ -233,7 +239,7 @@ var customerPanelVue = new Vue({
 					if (response.CustomerCase.length == 0) {
 						vue.alertMsg = 'No items in case';
 						vue.alertClass = 'text-warning';
-						$('#alertModal').modal('show');
+						vue.showModalAlert = true;
 					}
 					vue.CaseItems = response.CustomerCase;
 				}
@@ -248,5 +254,10 @@ var customerPanelVue = new Vue({
 				if (order.Status == 'New' || vue.OnlyNewOrders == false) return order;
 			})
 		}
+	},
+	mounted() {
+		var vue = this;
+		vue.GetItemList();
+		vue.ShowMyOrders();
 	}
 });

@@ -87,7 +87,9 @@ namespace RaalProjectPreview.BLL.Services
             {
                 OrderItem orderItem = new OrderItem();
                 orderItem.ItemsCount = oitem.Count();
-                orderItem.ItemPrice = _itemRepository.GetItemById(oitem.Key).Price;
+                Item it = _itemRepository.GetItemById(oitem.Key);
+                if (it != null) orderItem.ItemPrice = it.Price;
+                else orderItem.ItemPrice = 0;
                 orderItem.ItemId = oitem.Key;
                 orderItem.OrderId = order.Id;
                 try

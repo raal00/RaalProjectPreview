@@ -184,7 +184,9 @@ var adminPanelVue = new Vue({
 		Orders: [],
 		GridOrdersCols: ['Id', 'CustomerId', 'OrderDate', 'ShipmentDate', 'OrderNumber', 'Status'],
 
-		searchQuery: '',
+		searchQueryUser: '',
+		searchQueryItem: '',
+		searchQueryOrder: '',
 		
 		NewItem: {
 			Id: -1,
@@ -203,12 +205,21 @@ var adminPanelVue = new Vue({
 			PasswordHash: '',
 			ClientRole: 0
 		},
-		editMod: false,
+		editMod: Boolean,
 		alertClass: '',
-		alertMsg: ''
+		alertMsg: '',
+		showModalUser: false,
+		showModalItem: false,
+		showModalAlert: false
 	},
 	methods:
 	{
+		CloseModal: function(){
+			var vue = this;
+			vue.showModalUser = false;
+			vue.showModalItem = false;
+			vue.showModalAlert = false;
+		},
 		ShowAllUsers: function () {
 			var vue = this;
 			$.ajax({
@@ -219,7 +230,7 @@ var adminPanelVue = new Vue({
 					if (vue.Users.length == 0) {
 						vue.alertMsg = 'No users';
 						vue.alertClass = 'text-warning';
-						$('#alertModal').modal('show');
+						vue.showModalAlert = true;
 					}
 				}
 			});
@@ -234,7 +245,7 @@ var adminPanelVue = new Vue({
 					if (vue.Orders.length == 0) {
 						vue.alertMsg = 'No orders';
 						vue.alertClass = 'text-warning';
-						$('#alertModal').modal('show');
+						vue.showModalAlert = true;
 					}
 				}
 			});
@@ -249,7 +260,7 @@ var adminPanelVue = new Vue({
 					if (vue.Items.length == 0) {
 						vue.alertMsg = 'No items';
 						vue.alertClass = 'text-warning';
-						$('#alertModal').modal('show');
+						vue.showModalAlert = true;
 					}
 				}
 			});
@@ -265,7 +276,7 @@ var adminPanelVue = new Vue({
 			vue.NewUser.Login = '';
 			vue.NewUser.PasswordHash = '';
 			vue.NewUser.ClientRole = 0;
-			$('#AddUserModal').modal('show');
+			vue.showModalUser = true;
 		},
 		StartEditUser: function (user) {
 			var vue = this;
@@ -278,35 +289,9 @@ var adminPanelVue = new Vue({
 			vue.NewUser.Login = user.Login;
 			vue.NewUser.PasswordHash = user.PasswordHash;
 			vue.NewUser.ClientRole = user.ClientRole;
-			$('#AddUserModal').modal('show');
+			vue.showModalUser = true;
 		},
-		CompleteUser: function () {
-			$('#AddUserModal').modal('hide');
-			var vue = this;
-			var URL = '';
-			if (vue.editMod == true) {
-				URL = '/Admin/EditUser';
-			}
-			else {
-				URL = '/Admin/AddNewUser';
-            }
-			dataPost = {
-				AllUserData: vue.NewUser
-			};
-			$.ajax({
-				data: dataPost,
-				type: 'POST',
-				url: URL,
-				success: function (response) {
-					if (response.responseStatus == 2) {
-						vue.alertMsg = response.Message;
-						vue.alertClass = 'text-danger';
-						$('#alertModal').modal('show');
-                    }
-					vue.ShowAllUsers();
-				}
-			});
-		},
+		
 
 		StartAddNewItem: function () {
 			var vue = this;
@@ -315,7 +300,7 @@ var adminPanelVue = new Vue({
 			vue.NewItem.Name = '';
 			vue.NewItem.Price = 0;
 			vue.NewItem.Category = '';
-			$('#AddItemModal').modal('show');
+			vue.showModalItem = true;
 		},
 		StartEditItem: function (item) {
 			var vue = this;
@@ -325,34 +310,7 @@ var adminPanelVue = new Vue({
 			vue.NewItem.Name = item.Name;
 			vue.NewItem.Price = item.Price;
 			vue.NewItem.Category = item.Category;
-			$('#AddItemModal').modal('show');
-		},
-		CompleteItem: function () {
-			var vue = this;
-			$('#AddItemModal').modal('hide');
-			var URL = '';
-			if (vue.editMod == true) {
-				URL = '/Admin/EditItemInShop';
-			}
-			else {
-				URL = '/Admin/AddItemToShop';
-			}
-			dataPost = {
-				Item: vue.NewItem
-			};
-			$.ajax({
-				data: dataPost,
-				type: 'POST',
-				url: URL,
-				success: function (response) {
-					if (response.responseStatus == 2) {
-						vue.alertMsg = response.Message;
-						vue.alertClass = 'text-danger';
-						$('#alertModal').modal('show');
-					}
-					vue.ShowAllItems();
-				}
-			});
+			vue.showModalItem = true;
 		},
 		
 		DeleteUser: function (user) {
@@ -368,7 +326,7 @@ var adminPanelVue = new Vue({
 					if (response.responseStatus == 2) {
 						vue.alertMsg = response.Message;
 						vue.alertClass = 'text-danger';
-						$('#alertModal').modal('show');
+						vue.showModalAlert = true;
 					}
 					else {
 						vue.ShowAllUsers();
@@ -389,7 +347,7 @@ var adminPanelVue = new Vue({
 					if (response.responseStatus == 2) {
 						vue.alertMsg = response.Message;
 						vue.alertClass = 'text-danger';
-						$('#alertModal').modal('show');
+						vue.showModalAlert = true;
 					}
 					else {
 						vue.ShowAllItems();
@@ -411,7 +369,7 @@ var adminPanelVue = new Vue({
 					if (response.responseStatus == 2) {
 						vue.alertMsg = response.Message;
 						vue.alertClass = 'text-danger';
-						$('#alertModal').modal('show');
+						vue.showModalAlert = true;
 					}
 					vue.ShowAllOrders();
 				}
@@ -431,12 +389,17 @@ var adminPanelVue = new Vue({
 					if (response.responseStatus == 2) {
 						vue.alertMsg = response.Message;
 						vue.alertClass = 'text-danger';
-						$('#alertModal').modal('show');
+						vue.showModalAlert = true;
 					}
 					vue.ShowAllOrders();
 				}
 			});
 		}
-
+	},
+	mounted() {
+		var vue = this;
+		vue.ShowAllUsers();
+		vue.ShowAllItems();
+		vue.ShowAllOrders();
 	}
 });
