@@ -3,45 +3,16 @@
     <div class="col-sm-6">
         <div id="loginvue">
             <div class="form-horizontal">
-                <div class="form-group">
-                    <label for="login" class="col-sm-2">Логин</label>
-                    <div id="login" class="col-sm-10">
-                        <input v-model="login" class="form-control" />
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="pass" class="col-sm-2">Пароль</label>
-                    <div id="pass" class="col-sm-10">
-                        <input type="password" v-model="pass" class="form-control" />
-                    </div>
-                </div>
-                <button type="button" class="btn" v-on:click="loginUser()">Вход</button>
-                <button type="button" v-show="managPanelBtnShow" class="btn" v-on:click="adminPanel()">Панель администратора</button>
-                <button type="button" v-show="custPanelBtnShow" class="btn" v-on:click="userPanel()">Панель покупателя</button>
-            </div>
-            <div class="modal" id="alertModal" tabindex="-1" role="dialog" aria-labelledby="alertModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title text-center" id="alertModalLabel">Server response</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <h4 v-bind:class="[alertClass]" class="text-center">
-                                {{alertMsg}}
-                            </h4>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Ok</button>
-                        </div>
-                    </div>
-                </div>
+                <loginpanel>
+                    @*Login vue panel*@
+                </loginpanel>
+                <button type="button" v-show="managPanelBtnShow" class="btn btn-default" v-on:click="adminPanel()">Открыть панель администратора</button>
+                <button type="button" v-show="custPanelBtnShow" class="btn btn-default" v-on:click="userPanel()">Открыть панель покупателя</button>
             </div>
         </div>
     </div>
-    <div class="col-sm-offset-2 col-sm-4">
+    <div class="col-sm-6">
+        @*Default users info*@
         <h3 class="text-primary">Test users</h3>
         <hr />
         <p>Admin user</p>
@@ -62,12 +33,80 @@
             <label for="customerPass" class="col-sm-2 col-form-label">Password:</label>
             <h5 id="customerPass" class="col-sm-10">Customer</h5>
         </div>
-    </div>    
+    </div>
 </div>
 <div>
     <a id="register" class="btn btn-link" href="/Home/SignIn">Регистрация</a>
 </div>
+
+<script type="text/x-template" id="loginpanel-template">
+    <form>
+        <div class="form-group">
+            <label for="login" class="col-sm-2">Логин</label>
+            <div id="login" class="col-sm-10">
+                <input v-model="login" class="form-control" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="pass" class="col-sm-2">Пароль</label>
+            <div id="pass" class="col-sm-10">
+                <input type="password" v-model="pass" class="form-control" />
+            </div>
+        </div>
+        <button type="button" class="btn btn-primary" v-on:click="loginUser()">
+            <span v-if="load" class="spinner-border spinner-border-sm"></span>
+            Вход
+        </button>
+    </form>
+</script>
 <script type="text/javascript">
+    Vue.component("loginpanel", {
+	template: "#loginpanel-template",
+	props: {
+		login: '',
+        pass: '',
+        load: false
+	},
+	data: function () {
+
+	},
+	methods: {
+		Close() {
+			this.$emit("modal-closed");
+		},
+		Submit() {
+			this.$emit("modal-submit");
+		},
+        loginUser: function () {
+            this.load = true;
+            dataPost = {
+				Login: this.login,
+                Password: this.pass
+			};
+			$.ajax({
+				type: 'POST',
+                data: dataPost,
+				url: "/Home/Login",
+				success: function (response) {
+					if (response.responseStatus == 0) {
+                        if (response.Role == 0) {
+                            loginvue.custPanelBtnShow = false;
+                            loginvue.managPanelBtnShow = true;
+                        }
+                        else if (response.Role == 1) { 
+                            loginvue.custPanelBtnShow = true;
+                            loginvue.managPanelBtnShow = false;
+                        }
+                    }
+                    else{
+                        alert('Failed login');
+                    }
+                    this.load = false;
+				}
+			});
+        },
+	}
+});
     const routes = [
         { path: '/', beforeEnter: () => { window.location.href = '/Admin'; }, name: 'AdminPanel' },
         { path: '/', beforeEnter: () => { window.location.href = '/Customer'; }, name: 'CusomerPanel' },
@@ -83,43 +122,11 @@
 	{
 		login: '',
         pass: '',
-		alertClass: '',
-		alertMsg: '',
         custPanelBtnShow: false,
         managPanelBtnShow: false
 	},
 	methods:
 	{
-		loginUser: function () {
-			var vue = this;
-            dataPost = {
-				Login: vue.login,
-                Password: vue.pass
-			};
-			$.ajax({
-				type: 'POST',
-                data: dataPost,
-				url: "/Home/Login",
-				success: function (response) {
-					vue.alertMsg = response.Message;
-                    if (response.responseStatus == 0) {
-                        vue.alertClass = 'text-success';
-                        if (response.Role == 0) {
-                           vue.custPanelBtnShow = false;
-                            vue.managPanelBtnShow = true;
-                        }
-                        else if (response.Role == 1) { 
-                            vue.custPanelBtnShow = true;
-                            vue.managPanelBtnShow = false;
-                        }
-                    }
-                    else {
-                        vue.alertClass = 'text-danger';
-                    }
-                    $('#alertModal').modal('show');
-				}
-			});
-        },
         userPanel: function(){
             router.push({ name: "CusomerPanel"});
         },
