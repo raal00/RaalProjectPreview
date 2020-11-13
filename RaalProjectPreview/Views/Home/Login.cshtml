@@ -39,29 +39,9 @@
     <a id="register" class="btn btn-link" href="/Home/SignIn">Регистрация</a>
 </div>
 
-<script type="text/x-template" id="loginpanel-template">
-    <form>
-        <div class="form-group">
-            <label for="login" class="col-sm-2">Логин</label>
-            <div id="login" class="col-sm-10">
-                <input v-model="login" class="form-control" />
-            </div>
-        </div>
-        <div class="form-group">
-            <label for="pass" class="col-sm-2">Пароль</label>
-            <div id="pass" class="col-sm-10">
-                <input type="password" v-model="pass" class="form-control" />
-            </div>
-        </div>
-        <button type="button" class="btn btn-primary" v-on:click="loginUser()">
-            <span v-if="load" class="spinner-border spinner-border-sm"></span>
-            Вход
-        </button>
-    </form>
-</script>
 <script type="text/javascript">
     Vue.component("loginpanel", {
-	template: "#loginpanel-template",
+	template: '<form><div class="form-group"><label for="login" class="col-sm-2">Логин</label><div id="login" class="col-sm-10"><input v-model="login" class="form-control" /></div></div><div class="form-group"><label for="pass" class="col-sm-2">Пароль</label><div id="pass" class="col-sm-10"><input type="password" v-model="pass" class="form-control" /></div></div><button type="button" class="btn btn-primary" v-on:click="loginUser()"><span v-if="load" class="spinner-border spinner-border-sm"></span>Вход</button></form>',
 	props: {
 		login: '',
         pass: '',

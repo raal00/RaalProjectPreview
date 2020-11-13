@@ -1,16 +1,16 @@
 ﻿Vue.component("order-grid", {
-	template: "#orders-template",
+	template: '<table><thead><tr><th v-for="key in columns"v-on:click="sortBy(key)":class="{ active: sortKey == key }">{{ key | capitalize }}<span class="arrow asc"></span></th><th></th></tr></thead><tbody><tr v-for="entry in filteredOrders"><td v-for="key in columns">{{ entry[key] }}</td><td><button type="button" class="btn btn-default text-primary" v-on:click="customerPanelVue.CloseOrder(entry)">Close</button></td></tr></tbody></table>',
 	props: {
 		orders: [],
 		columns: [],
-		filterKey: ''
+		filterKey: '',
+		by: '1'
 	},
 	data: function () {
 		var sortOrders = {};
 		this.columns.forEach(function (key) {
 			sortOrders[key] = 1;
 		});
-		console.log(sortOrders);
 		return {
 			sortKey: '',
 			sortOrders: sortOrders
@@ -23,15 +23,25 @@
 			var filterKey = this.filterKey && this.filterKey.toLowerCase();
 			var order = this.sortOrders[sortKey] || 1;
 			var orders = this.orders;
+			var bystr = String(this.by);
 			if (filterKey) {
-				orders = orders.filter(function (row) {
-					return Object.keys(row).some(function (key) {
-						return (
-							String(row[key])
-								.toLowerCase()
-								.indexOf(filterKey) > -1
-						);
-					});
+				orders = orders.filter(function (ord) {
+					switch (bystr) {
+						case 'Id':
+							return ord.Id.toLowerCase().indexOf(filterKey) > -1;
+						case 'CustomerId':
+							return ord.CustomerId.toLowerCase().indexOf(filterKey) > -1;
+						case 'OrderDate':
+							return ord.OrderDate.toLowerCase().indexOf(filterKey) > -1;
+						case 'ShipmentDate':
+							return ord.ShipmentDate.toLowerCase().indexOf(filterKey) > -1;
+						case 'OrderNumber':
+							return ord.OrderNumber.toLowerCase().indexOf(filterKey) > -1;
+						case 'Status':
+							return ord.Status.toLowerCase().indexOf(filterKey) > -1;
+						default:
+							return true;
+					}
 				});
 			}
 			if (sortKey) {
@@ -57,11 +67,12 @@
 	}
 });
 Vue.component("item-grid", {
-	template: "#items-template",
+	template: '<table><thead><tr><th v-for="key in columns"v-on:click="sortBy(key)":class="{ active: sortKey == key }">{{ key | capitalize }}<span class="arrow asc"></span></th><th></th></tr></thead><tbody><tr v-for="entry in filteredItems"><td v-for="key in columns">{{ entry[key] }}</td><td><button type="button" class="btn btn-default" v-on:click="customerPanelVue.AddItemToCase(entry)">add to case</button></td></tr></tbody></table>',
 	props: {
 		items: [],
 		columns: [],
-		filterKey: ''
+		filterKey: '',
+		by: '1'
 	},
 	data: function () {
 		var sortOrders = {};
@@ -81,15 +92,23 @@ Vue.component("item-grid", {
 			var filterKey = this.filterKey && this.filterKey.toLowerCase();
 			var order = this.sortOrders[sortKey] || 1;
 			var items = this.items;
+			var bystr = String(this.by);
 			if (filterKey) {
-				items = items.filter(function (row) {
-					return Object.keys(row).some(function (key) {
-						return (
-							String(row[key])
-								.toLowerCase()
-								.indexOf(filterKey) > -1
-						);
-					});
+				items = items.filter(function (itm) {
+					switch (bystr) {
+						case 'Id':
+							return itm.Id.toLowerCase().indexOf(filterKey) > -1;
+						case 'Code':
+							return itm.Code.toLowerCase().indexOf(filterKey) > -1;
+						case 'Name':
+							return itm.Name.toLowerCase().indexOf(filterKey) > -1;
+						case 'Price':
+							return itm.Price.toLowerCase().indexOf(filterKey) > -1;
+						case 'Category':
+							return itm.Category.toLowerCase().indexOf(filterKey) > -1;
+						default:
+							return true;
+					}
 				});
 			}
 			if (sortKey) {
@@ -130,7 +149,9 @@ var customerPanelVue = new Vue({
 		OnlyNewOrders: false,
 		alertClass: '',
 		alertMsg: '',
-		showModalAlert: false
+		showModalAlert: false,
+		searchItemBy: '',
+		searchOrderBy: '',
 	},
 	methods:
 	{	

@@ -15,263 +15,93 @@
                 v-on:modal-closed="CloseModal()"
                 v-on:modal-submit="CloseModal()">
     </item-modal>
-
-    <div class="btn-group" role="group">
-        <button type="button" v-on:click="ShowAllItems()" class="btn btn-secondary">Показать товары</button>
-        <button type="button" v-on:click="ShowAllUsers()" class="btn btn-secondary">Показать покупателей</button>
-        <button type="button" v-on:click="ShowAllOrders()" class="btn btn-secondary">Показать заказы</button>
-    </div>
     <div class="btn-group" role="group">
         <button type="button" class="btn btn-secondary" data-toggle="modal" v-on:click="StartAddNewItem()">Добавить товар</button>
         <button type="button" class="btn btn-secondary" data-toggle="modal" v-on:click="StartAddNewUser()">Добавить покупателя</button>
     </div>
 
     <div style="margin-top: .2em">
-        <dfn>Пользователи</dfn>
         <form id="searchuser">
-            Поиск <input name="query" v-model="searchQueryUser" />
+            <div class="row">
+                <dfn class="col-sm-4">Пользователи</dfn>
+                <div class="col-sm-4">
+                    <label for="sw1">Фильтр по</label>
+                    <select id="sw1" class="form-control" v-model="searchUserBy">
+                        <option>CustomerId</option>
+                        <option>Name</option>
+                        <option>Code</option>
+                        <option>Address</option>
+                        <option>Discount</option>
+                        <option>Login</option>
+                        <option>PasswordHash</option>
+                        <option>ClientRole</option>
+                    </select>
+                </div>
+                <div class="col-sm-4">
+                    <label for="inp1">Поиск</label>
+                    <input id="inp1" class="form-control" name="query" v-model="searchQueryUser" />
+                </div>
+            </div>
         </form>
         <user-grid :users="Users"
                    :columns="GridUsersCols"
+                   :by="searchUserBy"
                    :filter-key="searchQueryUser">
         </user-grid>
     </div>
     <div style="margin-top: .2em">
-        <dfn>Товары</dfn>
         <form id="searchitem">
-            Поиск <input name="query" v-model="searchQueryItem" />
+            <div class="row">
+                <dfn class="col-sm-4">Товары</dfn>
+                <div class="col-sm-4">
+                    <label for="sw2">Фильтр по</label>
+                    <select id="sw2" class="form-control" v-model="searchItemBy">
+                        <option>Id</option>
+                        <option>Code</option>
+                        <option>Name</option>
+                        <option>Price</option>
+                        <option>Category</option>
+                    </select>
+                </div>
+                <div class="col-sm-4">
+                    <label for="inp2">Поиск</label>
+                    <input id="inp2" class="form-control" name="query" v-model="searchQueryItem" />
+                </div>
+            </div>
         </form>
         <item-grid :items="Items"
                    :columns="GridItemsCols"
+                   :by="searchItemBy"
                    :filter-key="searchQueryItem">
         </item-grid>
     </div>
     <div style="margin-top: .2em">
-        <dfn>Заказы</dfn>
         <form id="searchorder">
-            Поиск <input name="query" v-model="searchQueryOrder" />
+            <div class="row">
+                <dfn class="col-sm-4">Заказы</dfn>
+                <div class="col-sm-4">
+                    <label for="sw3">Фильтр по</label>
+                    <select id="sw3" class="form-control" v-model="searchOrderBy">
+                        <option>Id</option>
+                        <option>CustomerId</option>
+                        <option>OrderDate</option>
+                        <option>ShipmentDate</option>
+                        <option>OrderNumber</option>
+                        <option>Status</option>
+                    </select>
+                </div>
+                <div class="col-sm-4">
+                    <label for="inp3">Поиск</label>
+                    <input id="inp3" class="form-control" name="query" v-model="searchQueryOrder" />
+                </div>
+            </div>
         </form>
         <order-grid :orders="Orders"
                     :columns="GridOrdersCols"
+                    :by="searchOrderBy"
                     :filter-key="searchQueryOrder">
         </order-grid>
     </div>
-    <div class="modal" id="alertModal" tabindex="-1" role="dialog" aria-labelledby="alertModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title text-center" id="alertModalLabel">Server response</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <h4 v-bind:class="[alertClass]" class="text-center">
-                        {{alertMsg}}
-                    </h4>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Ok</button>
-                </div>
-            </div>
-        </div>
-    </div>
 </div>
-<script type="text/x-template" id="usermodal-template">
-    <template v-if="adminPanelVue.showModalUser">
-        <transition name="modal">
-            <div class="modal-mask">
-                <div class="modal-wrapper">
-                    <div class="modal-container">
-                        <div class="modal-header">
-                            <slot name="header">
-                                <h5 class="modal-title text-center">Server response</h5>
-                                <button type="button" class="close" v-on:click="Close()" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </slot>
-                        </div>
-                        <div class="modal-body">
-                            <slot name="body">
-                                <label for="userModal_Name">Имя</label>
-                                <input id="userModal_Name" class="form-control" v-model="user.Name" />
-                                <label for="userModal_Code">Код</label>
-                                <input id="userModal_Code" class="form-control" v-model="user.Code" />
-                                <label for="userModal_Address">Адрес</label>
-                                <input id="userModal_Address" class="form-control" v-model="user.Address" />
-                                <label for="userModal_Discount">Скидка</label>
-                                <input id="userModal_Discount" class="form-control" v-model="user.Discount" />
-                                <hr />
-                                <label for="userModal_Login">Логин</label>
-                                <input id="userModal_Login" class="form-control" v-model="user.Login" />
-                                <label for="userModal_PasswordHash">Хэш пароля</label>
-                                <input id="userModal_PasswordHash" class="form-control" v-model="user.PasswordHash" />
-                                <hr />
-                                <label for="userModal_ClientRole">Роль (0-админ/1-покупатель)</label>
-                                <input id="userModal_ClientRole" class="form-control" v-model="user.ClientRole" />
-                            </slot>
-                        </div>
-                        <div class="modal-footer">
-                            <slot name="footer">
-                                <button class="modal-default-button" v-on:click="CompleteUser()">
-                                    OK
-                                </button>
-                            </slot>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </transition>
-    </template>
-</script>
-<script type="text/x-template" id="itemmodal-template">
-    <template v-if="adminPanelVue.showModalItem">
-        <transition name="modal">
-            <div class="modal-mask">
-                <div class="modal-wrapper">
-                    <div class="modal-container">
-                        <div class="modal-header">
-                            <slot name="header">
-                                <h5 class="modal-title text-center">Server response</h5>
-                                <button type="button" class="close" v-on:click="Close()" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </slot>
-                        </div>
-                        <div class="modal-body">
-                            <slot name="body">
-                                <label for="itemModal_Name">Название</label>
-                                <input id="itemModal_Name" class="form-control" v-model="item.Name" />
-
-                                <label for="itemModal_Price">Цена</label>
-                                <input id="itemModal_Price" class="form-control" v-model="item.Price" />
-
-                                <label for="itemModal_Category">Категория</label>
-                                <input id="itemModal_Category" class="form-control" v-model="item.Category" />
-                            </slot>
-                        </div>
-                        <div class="modal-footer">
-                            <slot name="footer">
-                                <button class="modal-default-button" v-on:click="CompleteItem()">
-                                    OK
-                                </button>
-                            </slot>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </transition>
-    </template>
-</script>
-<script type="text/x-template" id="alertmodal-template">
-    <template v-if="adminPanelVue.showModalAlert">
-        <transition name="modal">
-            <div class="modal-mask">
-                <div class="modal-wrapper">
-                    <div class="modal-container">
-                        <div class="modal-header">
-                            <slot name="header">
-                                <h5 class="modal-title text-center">Server response</h5>
-                                <button type="button" class="close" v-on:click="Close()" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </slot>
-                        </div>
-                        <div class="modal-body">
-                            <slot name="body">
-                                <h3 v-bind:class="stl">{{msg}}</h3>
-                            </slot>
-                        </div>
-                        <div class="modal-footer">
-                            <slot name="footer">
-                                <button class="modal-default-button" v-on:click="Close()">
-                                    OK
-                                </button>
-                            </slot>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </transition>
-    </template>
-</script>
-<script type="text/x-template" id="users-template">
-    <table>
-        <thead>
-            <tr>
-                <th v-for="key in columns"
-                    v-on:click="sortBy(key)"
-                    :class="{ active: sortKey == key }">
-                    {{ key | capitalize }}
-                    <span class="arrow" :class="sortOrders[key] > 0 ? 'asc' : 'dsc'">
-                    </span>
-                </th>
-                <th></th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr v-for="entry in filteredUsers">
-                <td v-for="key in columns">
-                    {{ entry[key] }}
-                </td>
-                <td><button type="button" class="btn btn-default" v-on:click="adminPanelVue.StartEditUser(entry)">edit</button></td>
-                <td><button type="button" class="btn btn-default text-danger" v-on:click="adminPanelVue.DeleteUser(entry)">delete</button></td>
-            </tr>
-        </tbody>
-    </table>
-</script>
-<script type="text/x-template" id="items-template">
-    <table>
-        <thead>
-            <tr>
-                <th v-for="key in columns"
-                    v-on:click="sortBy(key)"
-                    :class="{ active: sortKey == key }">
-                    {{ key | capitalize }}
-                    <span class="arrow" :class="sortOrders[key] > 0 ? 'asc' : 'dsc'">
-                    </span>
-                </th>
-                <th></th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr v-for="entry in filteredItems">
-                <td v-for="key in columns">
-                    {{ entry[key] }}
-                </td>
-                <td><button type="button" class="btn btn-default" v-on:click="adminPanelVue.StartEditItem(entry)">edit</button></td>
-                <td><button type="button" class="btn btn-default text-danger" v-on:click="adminPanelVue.DeleteItem(entry)">delete</button></td>
-            </tr>
-        </tbody>
-    </table>
-</script>
-<script type="text/x-template" id="orders-template">
-    <table>
-        <thead>
-            <tr>
-                <th v-for="key in columns"
-                    v-on:click="sortBy(key)"
-                    :class="{ active: sortKey == key }">
-                    {{ key | capitalize }}
-                    <span class="arrow" :class="sortOrders[key] > 0 ? 'asc' : 'dsc'">
-                    </span>
-                </th>
-                <th></th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr v-for="entry in filteredOrders">
-                <td v-for="key in columns">
-                    {{ entry[key] }}
-                </td>
-                <td><button type="button" class="btn btn-default text-primary" v-on:click="adminPanelVue.SetInProcessingOrderStatus(entry)">set inProcessing</button></td>
-                <td><button type="button" class="btn btn-default text-success" v-on:click="adminPanelVue.SetCompletedOrderStatus(entry)">set completed</button></td>
-            </tr>
-        </tbody>
-    </table>
-</script>
 <script type="text/javascript" src="~/Scripts/Vue/AdminPanelVue.js"></script>
 <script type="text/javascript" src="~/Scripts/Vue/AdminPanelModalVue.js"></script>
